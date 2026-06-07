@@ -805,8 +805,8 @@ Add to `~/.claude/settings.json`:
 "extraKnownMarketplaces": {
   "roambee": {
     "source": {
-      "source": "git",
-      "url": "file:///Users/heetshah/Desktop/roambee-claude"
+      "source": "github",
+      "repo": "roambee/claude-code-standards"
     }
   }
 }
