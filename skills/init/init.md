@@ -4,6 +4,10 @@ Run once per developer machine. Idempotent — safe to re-run.
 
 **Announce at start:** "Running /init to set up your Roambee Claude Code environment."
 
+```bash
+PLUGIN_DIR="$HOME/roambee-claude"
+```
+
 ---
 
 ## Step 1: AWS CodeArtifact
@@ -39,6 +43,8 @@ d.setdefault('codeartifact', {}).update({
     'region': '<REGION>',
     'profile': '<PROFILE>'
 })
+d['pluginDir'] = os.path.expanduser('~/roambee-claude')
+os.makedirs(os.path.dirname(p), exist_ok=True)
 json.dump(d, open(p, 'w'), indent=2)
 print('Credentials saved.')
 "
@@ -63,7 +69,7 @@ Note: token expires after 12h. Re-run `/init` or `/doctor` to refresh.
 ## Step 2: Install CLAUDE.md
 
 ```bash
-cp "$(dirname "$0")/../../templates/CLAUDE.md" ~/.claude/CLAUDE.md
+cp "$PLUGIN_DIR/templates/CLAUDE.md" ~/.claude/CLAUDE.md
 echo "✅ ~/.claude/CLAUDE.md installed"
 ```
 
@@ -79,7 +85,7 @@ Read the hooks from `docs/hooks-settings-patch.json` in the plugin repo and merg
 python3 -c "
 import json, os
 settings_path = os.path.expanduser('~/.claude/settings.json')
-hooks_patch_path = os.path.join(os.path.dirname(os.path.abspath('$0')), '../../docs/hooks-settings-patch.json')
+hooks_patch_path = '$PLUGIN_DIR/docs/hooks-settings-patch.json'
 
 settings = {}
 try: settings = json.load(open(settings_path))
@@ -110,7 +116,7 @@ Read `plugin.json` dependencies and patch them into `~/.claude/settings.json`:
 python3 -c "
 import json, os
 settings_path = os.path.expanduser('~/.claude/settings.json')
-plugin_path = os.path.join(os.path.dirname(os.path.abspath('$0')), '../../plugin.json')
+plugin_path = '$PLUGIN_DIR/plugin.json'
 
 settings = {}
 try: settings = json.load(open(settings_path))
@@ -184,7 +190,7 @@ Print a checklist of what was completed:
 ```
 ✅ AWS CodeArtifact authenticated (token valid 12h)
 ✅ ~/.claude/CLAUDE.md installed
-✅ Hooks installed (16 hooks active)
+✅ Hooks installed (will be active after P2 completes)
 ✅ Required plugins added to settings.json
 ✅ Playwright Chromium installed
 ✅ Atlassian MCP authenticated — project: <PROJECT_KEY>

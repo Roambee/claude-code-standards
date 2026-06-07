@@ -4,16 +4,25 @@ Verifies the Claude Code environment is correctly set up. Auto-fixes what it can
 
 **Announce at start:** "Running /doctor to check your Roambee Claude Code setup."
 
+```bash
+PLUGIN_DIR=$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))).get('pluginDir', os.path.expanduser('~/roambee-claude')))")
+```
+
 ---
 
 ## Check 1: AWS CodeArtifact Token
 
 ```bash
-aws codeartifact get-authorization-token \
-  --domain roambee \
-  --domain-owner $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['accountId'])") \
-  --region $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['region'])") \
-  --query authorizationToken --output text > /dev/null 2>&1 && echo "VALID" || echo "EXPIRED"
+CONFIG_EXISTS=$(test -f ~/.claude/roambee-config.json && echo "YES" || echo "NO")
+if [ "$CONFIG_EXISTS" = "NO" ]; then
+  echo "⚠️ ~/.claude/roambee-config.json not found. Run /init first."
+else
+  aws codeartifact get-authorization-token \
+    --domain roambee \
+    --domain-owner $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['accountId'])") \
+    --region $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['region'])") \
+    --query authorizationToken --output text > /dev/null 2>&1 && echo "VALID" || echo "EXPIRED"
+fi
 ```
 
 - **VALID**: ✅ CodeArtifact token is active
@@ -40,7 +49,7 @@ Read `~/.claude/settings.json`. Check that all hook matchers from `docs/hooks-se
 python3 -c "
 import json, os
 settings = json.load(open(os.path.expanduser('~/.claude/settings.json')))
-patch = json.load(open('docs/hooks-settings-patch.json'))
+patch = json.load(open('$PLUGIN_DIR/docs/hooks-settings-patch.json'))
 missing = []
 for event, hooks in patch.items():
     if event.startswith('_'): continue
@@ -79,7 +88,7 @@ test -f "$REPO_ROOT/architecture.md" && echo "EXISTS" || echo "MISSING"
 python3 -c "
 import json, os
 settings = json.load(open(os.path.expanduser('~/.claude/settings.json')))
-plugin = json.load(open('plugin.json'))
+plugin = json.load(open('$PLUGIN_DIR/plugin.json'))
 installed = set(settings.get('plugins', {}).keys())
 required = {p['name'] for p in plugin.get('dependencies', {}).get('plugins', [])}
 missing = required - installed
@@ -118,8 +127,8 @@ Call `mcp__claude_ai_Atlassian__atlassianUserInfo`.
 ## Check 8: Plugin Up to Date
 
 ```bash
-git -C ~/roambee-claude fetch --quiet 2>/dev/null
-BEHIND=$(git -C ~/roambee-claude rev-list HEAD..origin/main --count 2>/dev/null)
+git -C $PLUGIN_DIR fetch --quiet 2>/dev/null
+BEHIND=$(git -C $PLUGIN_DIR rev-list HEAD..origin/main --count 2>/dev/null)
 echo "${BEHIND:-0}"
 ```
 
