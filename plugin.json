@@ -1,0 +1,47 @@
+{
+  "name": "roambee-claude",
+  "version": "1.0.0",
+  "description": "Roambee company-wide Claude Code standards and workflow enforcement plugin",
+  "skills": [
+    "init",
+    "doctor",
+    "new-repo",
+    "plan",
+    "standup",
+    "pr",
+    "next-ticket",
+    "release-notes",
+    "decklar-ui-library",
+    "decklar-api-integration",
+    "decklar-app-scaffold",
+    "decklar-header-integration",
+    "hive-app-creator",
+    "testing-standards",
+    "logging-standards",
+    "api-design",
+    "migration-standards",
+    "python-ai-service",
+    "ai-testing",
+    "agentic-standards",
+    "provider-abstraction"
+  ],
+  "dependencies": {
+    "plugins": [
+      { "name": "superpowers",     "source": "thedotmack/superpowers" },
+      { "name": "feature-dev",     "source": "thedotmack/feature-dev" },
+      { "name": "code-simplifier", "source": "thedotmack/code-simplifier" },
+      { "name": "github",          "source": "github/gh-mcp" },
+      { "name": "claude-mem",      "source": "thedotmack/claude-mem" },
+      { "name": "hookify",         "source": "thedotmack/hookify" },
+      { "name": "coderabbit",      "source": "coderabbit-ai/coderabbit-claude" },
+      { "name": "frontend-design", "source": "thedotmack/frontend-design" }
+    ],
+    "mcpServers": [
+      {
+        "name": "playwright",
+        "command": "npx",
+        "args": ["@playwright/mcp@latest"]
+      }
+    ]
+  }
+}
