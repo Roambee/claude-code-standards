@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "description": "Written by /init to ~/.claude/roambee-config.json. All fields are optional until the feature that needs them is first used.",
+  "type": "object",
+  "properties": {
+    "codeartifact": {
+      "type": "object",
+      "properties": {
+        "accountId": { "type": "string", "description": "AWS account ID owning the CodeArtifact domain" },
+        "region":    { "type": "string", "description": "AWS region, e.g. ap-south-1" },
+        "profile":   { "type": "string", "description": "AWS CLI profile name, e.g. default" }
+      }
+    },
+    "jira": {
+      "type": "object",
+      "properties": {
+        "domain":     { "type": "string", "description": "Atlassian domain, e.g. roambee.atlassian.net" },
+        "projectKey": { "type": "string", "description": "Jira project key, e.g. RMB" }
+      }
+    },
+    "openrouter": {
+      "type": "object",
+      "properties": {
+        "baseUrl":    { "type": "string", "description": "OpenRouter base URL" },
+        "keyEnvVar":  { "type": "string", "description": "Name of the env var holding the API key, e.g. OPENROUTER_API_KEY" }
+      }
+    }
+  }
+}
