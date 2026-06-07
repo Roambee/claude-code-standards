@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m json.tool docs/hooks-settings-patch.json)",
+      "Bash(ROAMBEE_FILE_PATH=\"/tmp/hook-test/src/config.ts\" ROAMBEE_FILE_CONTENT='const password = \"supersecret123\";' bash /Users/heetshah/Desktop/roambee-claude/hooks/hook-06-secret-scan.sh)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(ROAMBEE_FILE_PATH=\"/tmp/hook-test/src/config.ts\" ROAMBEE_FILE_CONTENT='const greeting = \"hello world\";' bash /Users/heetshah/Desktop/roambee-claude/hooks/hook-06-secret-scan.sh)",
+      "Bash(ROAMBEE_FILE_PATH=\"/tmp/hook-test/src/config.ts\" ROAMBEE_FILE_CONTENT='const key = \"AKIAABCDEFGHIJKLMNOP\";' bash /Users/heetshah/Desktop/roambee-claude/hooks/hook-06-secret-scan.sh)",
+      "Bash(ROAMBEE_FILE_PATH=\"/tmp/hook-test/.env\" ROAMBEE_FILE_CONTENT='FOO=bar' bash /Users/heetshah/Desktop/roambee-claude/hooks/hook-06-secret-scan.sh)",
+      "Bash(ROAMBEE_FILE_PATH=\"/Users/heetshah/repo/packages/client/shipments/src/Foo.tsx\" ROAMBEE_FILE_CONTENT=\"import { Bar } from '@roambee/users-mfe';\" bash /Users/heetshah/Desktop/roambee-claude/hooks/hook-12-cross-mfe-import.sh)",
+      "Bash(ROAMBEE_FILE_PATH=\"/Users/heetshah/repo/packages/client/shipments/src/Foo.tsx\" ROAMBEE_FILE_CONTENT=\"import { Bar } from '@roambee/shared';\" bash /Users/heetshah/Desktop/roambee-claude/hooks/hook-12-cross-mfe-import.sh)",
+      "Bash(ROAMBEE_FILE_CONTENT='@Get\\(\"/foo\"\\) *)",
+      "Bash(rm -rf /tmp/hook-test /tmp/hook-test2 /tmp/roambee-hook*-checked)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
