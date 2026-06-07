@@ -116,7 +116,7 @@ Read `plugin.json` dependencies and patch them into `~/.claude/settings.json`:
 python3 -c "
 import json, os
 settings_path = os.path.expanduser('~/.claude/settings.json')
-plugin_path = '$PLUGIN_DIR/plugin.json'
+plugin_path = '$PLUGIN_DIR/.claude-plugin/plugin.json'
 
 settings = {}
 try: settings = json.load(open(settings_path))

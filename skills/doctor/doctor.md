@@ -88,7 +88,7 @@ test -f "$REPO_ROOT/architecture.md" && echo "EXISTS" || echo "MISSING"
 python3 -c "
 import json, os
 settings = json.load(open(os.path.expanduser('~/.claude/settings.json')))
-plugin = json.load(open('$PLUGIN_DIR/plugin.json'))
+plugin = json.load(open('$PLUGIN_DIR/.claude-plugin/plugin.json'))
 installed = set(settings.get('plugins', {}).keys())
 required = {p['name'] for p in plugin.get('dependencies', {}).get('plugins', [])}
 missing = required - installed

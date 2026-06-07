@@ -2,29 +2,9 @@
   "name": "roambee-claude",
   "version": "1.0.0",
   "description": "Roambee company-wide Claude Code standards and workflow enforcement plugin",
-  "skills": [
-    "init",
-    "doctor",
-    "new-repo",
-    "plan",
-    "standup",
-    "pr",
-    "next-ticket",
-    "release-notes",
-    "decklar-ui-library",
-    "decklar-api-integration",
-    "decklar-app-scaffold",
-    "decklar-header-integration",
-    "hive-app-creator",
-    "testing-standards",
-    "logging-standards",
-    "api-design",
-    "migration-standards",
-    "python-ai-service",
-    "ai-testing",
-    "agentic-standards",
-    "provider-abstraction"
-  ],
+  "author": {
+    "name": "Roambee Engineering"
+  },
   "dependencies": {
     "plugins": [
       { "name": "superpowers",     "source": "thedotmack/superpowers" },
