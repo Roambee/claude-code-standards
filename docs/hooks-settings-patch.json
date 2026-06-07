@@ -1,0 +1,5 @@
+{
+  "_comment": "Populated by P2 — Enforcement Hooks. This file is merged into ~/.claude/settings.json by /init.",
+  "PreToolUse": [],
+  "PostToolUse": []
+}
