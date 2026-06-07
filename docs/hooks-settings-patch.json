@@ -1,5 +1,82 @@
 {
-  "_comment": "Populated by P2 — Enforcement Hooks. This file is merged into ~/.claude/settings.json by /init.",
-  "PreToolUse": [],
-  "PostToolUse": []
+  "_comment": "Merged into ~/.claude/settings.json by /init. Each hook references an absolute path to the script in $HOME/roambee-claude/hooks/.",
+  "PreToolUse": [
+    {
+      "matcher": ".*",
+      "command": "$HOME/roambee-claude/hooks/hook-00-plugin-update.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" $HOME/roambee-claude/hooks/hook-01-architecture-check.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" $HOME/roambee-claude/hooks/hook-02-path-aware-skill.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "(\\.github/workflows/|Jenkinsfile)",
+      "command": "$HOME/roambee-claude/hooks/hook-03-ci-warning.sh"
+    },
+    {
+      "matcher": "Bash",
+      "inputFilter": "git commit",
+      "command": "$HOME/roambee-claude/hooks/hook-04-precommit-gate.sh"
+    },
+    {
+      "matcher": "Bash",
+      "inputFilter": "(migration:run|migration:up|dev:migration)",
+      "command": "$HOME/roambee-claude/hooks/hook-05-migration-safety.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-06-secret-scan.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "(package\\.json|pyproject\\.toml)",
+      "command": "$HOME/roambee-claude/hooks/hook-07-dependency-governance.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "\\.(py|ts)$",
+      "command": "ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-08-prompt-as-code.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "packages/ai/",
+      "command": "$HOME/roambee-claude/hooks/hook-09-ai-observability.sh"
+    },
+    {
+      "matcher": "Bash",
+      "inputFilter": "(prod|staging|rds\\.amazonaws|postgres://[^l])",
+      "command": "$HOME/roambee-claude/hooks/hook-10-environment-guard.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "\\.(ts|tsx|py)$",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-11-pii-detector.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "packages/client/.*\\.(ts|tsx)$",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-12-cross-mfe-import.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "\\.(ts|tsx|py)$",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-13-env-var-governance.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "\\.controller\\.ts$",
+      "command": "ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-14-swagger-enforcement.sh"
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "Write|Edit",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" $HOME/roambee-claude/hooks/hook-15-subagent-doc-update.sh"
+    }
+  ]
 }
