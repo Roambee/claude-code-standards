@@ -806,7 +806,7 @@ Add to `~/.claude/settings.json`:
   "roambee": {
     "source": {
       "source": "github",
-      "repo": "roambee/claude-code-standards"
+      "repo": "Roambee/claude-code-standards"
     }
   }
 }

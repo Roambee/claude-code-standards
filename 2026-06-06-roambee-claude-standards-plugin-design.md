@@ -10,7 +10,7 @@
 
 A company-wide Claude Code plugin (`roambee-claude`) that enforces consistent development standards across all Roambee engineering teams. Covers app developers (React microfrontends, NestJS backends) and AI developers (FastAPI, LLM integrations, agentic workflows).
 
-Distributed as a Claude Code plugin via the `.claude-plugin/marketplace.json` + `.claude-plugin/plugin.json` manifest pair at the repo root. Push to a dedicated GitHub org repo (`roambee/claude-code-standards`) and developers register it with a relative `{ "source": "github", "repo": "roambee/claude-code-standards" }` marketplace entry — no per-machine path configuration needed.
+Distributed as a Claude Code plugin via the `.claude-plugin/marketplace.json` + `.claude-plugin/plugin.json` manifest pair at the repo root. Push to a dedicated GitHub org repo (`Roambee/claude-code-standards`) and developers register it with a relative `{ "source": "github", "repo": "Roambee/claude-code-standards" }` marketplace entry — no per-machine path configuration needed.
 
 ### Installation (developer onboarding)
 
@@ -18,7 +18,7 @@ Distributed as a Claude Code plugin via the `.claude-plugin/marketplace.json` + 
 // ~/.claude/settings.json — add once per developer machine
 "extraKnownMarketplaces": {
   "roambee": {
-    "source": { "source": "github", "repo": "roambee/claude-code-standards" }
+    "source": { "source": "github", "repo": "Roambee/claude-code-standards" }
   }
 }
 ```
@@ -739,5 +739,5 @@ Install all skills for all developers. No manual track selection. The plugin use
 
 1. **Phase 1 — Local (now)**: Build plugin at `~/roambee-claude/`, test on your own machine
 2. **Phase 2 — Small team**: Share with 2-3 trusted devs, collect feedback, fill open questions
-3. **Phase 3 — GitHub org repo**: Push to `github.com/roambee/claude-code-standards`, switch each developer's `extraKnownMarketplaces.roambee` entry to `{ "source": "github", "repo": "roambee/claude-code-standards" }`
+3. **Phase 3 — GitHub org repo**: Push to `github.com/Roambee/claude-code-standards`, switch each developer's `extraKnownMarketplaces.roambee` entry to `{ "source": "github", "repo": "Roambee/claude-code-standards" }`
 4. **Phase 4 — Company rollout**: Update developer onboarding docs, announce, have devs run `/init`
