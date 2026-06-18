@@ -24,6 +24,31 @@
         "baseUrl":    { "type": "string", "description": "OpenRouter base URL" },
         "keyEnvVar":  { "type": "string", "description": "Name of the env var holding the API key, e.g. OPENROUTER_API_KEY" }
       }
+    },
+    "memory": {
+      "type": "object",
+      "description": "Shared team memory store used by /remember and /recall",
+      "properties": {
+        "backend": {
+          "type": "string",
+          "enum": ["local", "graphify"],
+          "default": "local",
+          "description": "Storage backend. 'local' = markdown files + optional git sync. 'graphify' = POST/GET to graphify/hindsight API."
+        },
+        "store": {
+          "type": "string",
+          "default": "~/.claude/roambee-memory",
+          "description": "Local directory for memory files. Used when backend=local."
+        },
+        "remote": {
+          "type": "string",
+          "description": "Git remote URL for team sync (e.g. git@github.com:Roambee/team-memory.git). Optional — if set, /remember pushes and /recall pulls automatically."
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "Base URL of the graphify/hindsight API. Required when backend=graphify."
+        }
+      }
     }
   }
 }
