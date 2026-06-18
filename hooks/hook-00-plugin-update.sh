@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# Hook 0: Plugin update notifier — fires on first tool call of session
-# Uses a session flag file to run only once per session
+# Hook 0: Plugin update notifier — fires once per day per repo
 
-SESSION_FLAG="/tmp/roambee-hook0-$$-checked"
-[ -f "$SESSION_FLAG" ] && exit 0
-touch "$SESSION_FLAG"
+source "$HOME/roambee-claude/hooks/lib.sh"
+
+told_this_session "hook-00-update-check" && exit 0
 
 BEHIND=$(git -C "$HOME/roambee-claude" fetch --quiet 2>/dev/null && \
          git -C "$HOME/roambee-claude" rev-list HEAD..origin/main --count 2>/dev/null || echo "0")
@@ -12,4 +11,6 @@ BEHIND=$(git -C "$HOME/roambee-claude" fetch --quiet 2>/dev/null && \
 if [ "${BEHIND:-0}" -gt 0 ]; then
   echo "⚠️  roambee-claude plugin has $BEHIND new commit(s). Run \`git pull\` in ~/roambee-claude/ or run /doctor to apply updates."
 fi
+
+mark_told "hook-00-update-check"
 exit 0

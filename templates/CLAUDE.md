@@ -47,13 +47,7 @@ The pipeline checks: commitlint, ESLint, TypeScript compilation, unit tests, e2e
 
 ## Architecture
 
-This repo uses a two-level architecture doc system:
-
-- **`architecture.md`** (repo root) — navigation index only, one paragraph per module
-- **`docs/architecture/<module>/overview.md`** — full detail per module, read this when working in that module
-- **`docs/architecture/decisions/`** — Architecture Decision Records (ADRs) for significant choices
-
-Hook-16 will surface the relevant module doc automatically when you edit files in `packages/` or `apps/`. To update the tree, run `/architecture`. To log a decision, run `/architecture adr`.
+[architecture.md](architecture.md) is the index (one line per module). Deep files live in `docs/architecture/<module>/overview.md`. Hook-16 surfaces the relevant file automatically on first edit in a module. To update the tree or log a decision: `/architecture`.
 
 ## Docs Update Rule
 

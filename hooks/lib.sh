@@ -28,3 +28,32 @@ except: print('')
 BLOCK=2      # Hard block — Claude stops and shows message
 ALLOW=0      # Pass silently
 INJECT=0     # Context injection — print message then exit 0 (Claude reads stdout)
+
+# ── Session-scoped deduplication ─────────────────────────────────────────────
+# Inject-only hooks (reminders, not safety checks) call told_this_session
+# before outputting and mark_told after. Scoped to: git repo × calendar day.
+# This prevents the same reminder from firing 20 times in one coding session.
+
+_roambee_session_dir() {
+  local repo_id date
+  repo_id=$(git rev-parse --show-toplevel 2>/dev/null | cksum | cut -d' ' -f1 2>/dev/null || echo "global")
+  date=$(date +%Y%m%d)
+  echo "/tmp/roambee-${repo_id}-${date}"
+}
+
+# Returns 0 (true) if this key was already told in this session.
+told_this_session() {
+  local dir key
+  dir=$(_roambee_session_dir)
+  key=$(echo "$1" | tr '/: .' '____')
+  [ -f "${dir}/${key}" ]
+}
+
+# Marks a key as told for this session.
+mark_told() {
+  local dir key
+  dir=$(_roambee_session_dir)
+  mkdir -p "$dir" 2>/dev/null
+  key=$(echo "$1" | tr '/: .' '____')
+  touch "${dir}/${key}"
+}
