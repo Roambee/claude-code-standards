@@ -71,6 +71,11 @@
       "matcher": "Write|Edit",
       "inputFilter": "\\.controller\\.ts$",
       "command": "ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" $HOME/roambee-claude/hooks/hook-14-swagger-enforcement.sh"
+    },
+    {
+      "matcher": "Write|Edit",
+      "inputFilter": "(packages|apps)/",
+      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" $HOME/roambee-claude/hooks/hook-16-arch-doc-injection.sh"
     }
   ],
   "PostToolUse": [
