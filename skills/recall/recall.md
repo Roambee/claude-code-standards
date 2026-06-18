@@ -1,6 +1,6 @@
 # /recall — Search Team Memory
 
-Use when you want to find how the team solved a problem, discovered a pattern, or made a decision. Works across all entries saved by all team members via `/remember`.
+Use when you want to find how the team solved a problem, discovered a pattern, or made a decision in a previous session. Searches across all sessions and all team members via claude-mem.
 
 **Announce at start:** "Loading /recall. Searching team memory."
 
@@ -10,159 +10,76 @@ Use when you want to find how the team solved a problem, discovered a pattern, o
 
 If the developer typed `/recall <keywords>`, use those keywords directly.
 
-Otherwise ask: "What are you looking for? You can search by: keywords, module name, author, type (`bug-fix`, `pattern`, `decision`, `gotcha`), or just describe the problem."
+Otherwise ask: "What are you looking for? You can use keywords, a module name, an author name, or describe the problem."
 
 ---
 
-## Step 2: Read Config
+## Step 2: Search — Get the Index
 
-```bash
-python3 -c "
-import json, os
-cfg_path = os.path.expanduser('~/.claude/roambee-config.json')
-cfg = json.load(open(cfg_path)) if os.path.exists(cfg_path) else {}
-mem = cfg.get('memory', {})
-print('backend:', mem.get('backend', 'local'))
-print('store:',   mem.get('store',   os.path.expanduser('~/.claude/roambee-memory')))
-print('remote:',  mem.get('remote',  ''))
-print('endpoint:', mem.get('endpoint', ''))
-"
+Call `mcp__plugin_claude-mem_mcp-search__search` with the query.
+
+Use `obs_type` to narrow by learning type when the developer specifies one:
+
+| Developer says | obs_type value |
+|----------------|---------------|
+| "bug fix", "how we fixed" | `bugfix` |
+| "pattern", "approach", "how we do" | `feature` |
+| "decision", "why we chose" | `decision` |
+| "gotcha", "trap", "watch out" | `discovery` |
+| _(no type specified)_ | _(omit — search all)_ |
+
+Example calls:
+```
+search(query="typeorm migration deadlock", limit=20)
+search(query="openrouter retry", obs_type="bugfix", limit=20)
+search(query="packages/ai/classifier", limit=20)
+search(query="heet shah auth", limit=20)
 ```
 
-If `backend` is `graphify` → skip to **Graphify Search** section.
+This returns a table of IDs, timestamps, and titles at ~50-100 tokens per result. **Do not fetch full details yet.**
 
 ---
 
-## Step 3: Pull Latest (if git remote configured)
+## Step 3: Timeline — Get Context Around Interesting Hits
 
-```bash
-STORE=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c.get('memory',{}).get('store', os.path.expanduser('~/.claude/roambee-memory')))")
-REMOTE=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c.get('memory',{}).get('remote',''))")
+For any result that looks relevant, call `mcp__plugin_claude-mem_mcp-search__timeline` to see what was happening around it:
 
-if [ -n "$REMOTE" ] && [ -d "$STORE/.git" ]; then
-  cd "$STORE" && git pull --quiet origin main 2>/dev/null || echo "(could not pull — using local cache)"
-fi
-
-[ ! -d "$STORE" ] && echo "No team memory found. Save learnings first with /remember." && exit 0
+```
+timeline(anchor=<ID>, depth_before=3, depth_after=3)
 ```
 
+This surfaces the session context around that observation — useful for understanding the full picture of how something was solved.
+
 ---
 
-## Step 4: Search and Rank
+## Step 4: Fetch — Read Full Details for Selected Entries
 
-```bash
-python3 << 'EOF'
-import os, sys, glob, re
+After reviewing the index and timeline, pick the most relevant IDs. Fetch them all in one call:
 
-store = os.path.expanduser(
-    __import__('json').load(open(os.path.expanduser('~/.claude/roambee-config.json')))
-    .get('memory', {}).get('store', os.path.expanduser('~/.claude/roambee-memory'))
-)
-
-query = "<query from Step 1>".lower()
-terms = query.split()
-
-results = []
-for filepath in glob.glob(store + '/**/*.md', recursive=True):
-    try:
-        content = open(filepath).read()
-        content_lower = content.lower()
-
-        # Score: weight title matches higher than body matches
-        title_match = next((l.lstrip('# ') for l in content.split('\n') if l.startswith('# ')), '')
-        title_score = sum(3 for t in terms if t in title_match.lower())
-        tag_score   = sum(2 for t in terms if t in content_lower[:300])  # frontmatter zone
-        body_score  = sum(1 for t in terms if t in content_lower)
-
-        score = title_score + tag_score + body_score
-        if score == 0:
-            continue
-
-        # Parse frontmatter
-        fm = {}
-        for line in content.split('\n')[1:20]:
-            if line == '---': break
-            if ': ' in line:
-                k, v = line.split(': ', 1)
-                fm[k.strip()] = v.strip()
-
-        # First non-heading, non-frontmatter paragraph as preview
-        lines = [l for l in content.split('\n') if l and not l.startswith('#') and not l.startswith('---') and ': ' not in l[:30]]
-        preview = lines[0][:120] if lines else ''
-
-        results.append({
-            'score': score,
-            'filepath': filepath,
-            'title': title_match,
-            'author': fm.get('author', '?'),
-            'date': fm.get('date', '?'),
-            'type': fm.get('type', '?'),
-            'module': fm.get('module', '?'),
-            'tags': fm.get('tags', ''),
-            'preview': preview,
-        })
-    except Exception:
-        continue
-
-results.sort(key=lambda x: x['score'], reverse=True)
-
-if not results:
-    print(f"No matches found for: {query}")
-    print("Try broader keywords, or check what's saved with: ls ~/.claude/roambee-memory/**/*.md")
-else:
-    print(f"Found {len(results)} match(es) for '{query}':\n")
-    for i, r in enumerate(results[:5], 1):
-        print(f"[{i}] {r['title']}")
-        print(f"    {r['author']}  ·  {r['date']}  ·  {r['type']}  ·  {r['module']}")
-        print(f"    tags: {r['tags']}")
-        print(f"    {r['preview']}")
-        print(f"    → {r['filepath']}")
-        print()
-EOF
+```
+get_observations(ids=[<id1>, <id2>, ...])
 ```
 
----
-
-## Step 5: Present Results and Offer to Read
-
-Show the ranked results. Then ask:
-
-"Want me to read any of these in full? Give me the number."
-
-If yes, read the full file and present its content to the developer.
-
-If results are weak (low scores, partial matches), ask: "These are partial matches — try a different keyword? (e.g. the exact error message, the package name, or the author)"
+Never fetch more than you need — each observation is 500–1000 tokens.
 
 ---
 
-## Graphify Search (when backend = "graphify")
+## Step 5: Present Results
 
-When `memory.backend = "graphify"` in `roambee-config.json`:
+Show the developer:
+- What was found (title, author, date, module)
+- The key facts from the observation — problem, root cause, fix, or pattern
+- Any related observations from the timeline that add context
 
-```bash
-ENDPOINT=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c['memory']['endpoint'])")
-QUERY="<query from Step 1>"
-
-python3 -c "
-import urllib.request, urllib.parse, json, os
-url = os.environ['ENDPOINT'] + '/memories/search?q=' + urllib.parse.quote(os.environ['QUERY'])
-with urllib.request.urlopen(url) as resp:
-    results = json.loads(resp.read())
-    for r in results.get('entries', [])[:5]:
-        print(r['title'], '—', r['author'], r['date'])
-        print(r['preview'])
-        print()
-"
-```
-
-_Update the endpoint path, query params, and auth headers to match the graphify API when it's ready. Set `memory.backend = \"graphify\"` and `memory.endpoint = \"<url>\"` in `~/.claude/roambee-config.json`._
+If nothing relevant was found, say: "No matches for '<query>'. This might not have been saved yet — ask the person who solved it to run `/remember` in their next session, or try different keywords."
 
 ---
 
 ## Tips
 
-- `/recall typeorm migration` — finds bug fixes involving TypeORM migrations
-- `/recall packages/ai` — finds all entries for the AI packages
-- `/recall heet` — finds everything saved by Heet
-- `/recall bug-fix` — lists all bug fix entries
-- No results? The fix might not have been saved yet — ask the person who solved it to run `/remember`
+- `/recall typeorm migration` — finds past TypeORM issues
+- `/recall packages/ai` — finds all entries touching the AI packages
+- `/recall heet` — finds everything from Heet's sessions
+- `/recall bug-fix auth` — finds auth bug fixes across all sessions
+
+> **Note for when graphify/hindsight is ready:** Replace Steps 2–4 with a GET to the graphify search API. Update `memory.backend` and `memory.endpoint` in `~/.claude/roambee-config.json`.

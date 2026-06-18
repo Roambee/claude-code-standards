@@ -1,32 +1,12 @@
-# /remember — Save a Team Learning to Shared Memory
+# /remember — Capture a Team Learning
 
-Use after solving a bug, discovering a reusable pattern, making a decision, or hitting a non-obvious gotcha. Saves the learning in a structured format the whole team can search.
+Use after solving a bug, discovering a pattern, making a decision, or hitting a non-obvious gotcha. Formats the learning so claude-mem captures it at session end and the whole team can find it later with `/recall`.
 
 **Announce at start:** "Loading /remember. Let's capture this for the team."
 
 ---
 
-## Step 1: Read Backend Config
-
-```bash
-python3 -c "
-import json, os
-cfg_path = os.path.expanduser('~/.claude/roambee-config.json')
-cfg = json.load(open(cfg_path)) if os.path.exists(cfg_path) else {}
-mem = cfg.get('memory', {})
-print('backend:', mem.get('backend', 'local'))
-print('store:',   mem.get('store',   os.path.expanduser('~/.claude/roambee-memory')))
-print('remote:',  mem.get('remote',  ''))
-print('endpoint:', mem.get('endpoint', ''))
-"
-```
-
-- If `backend` is `graphify` → skip to **Step 5**
-- Otherwise continue (local file + optional git sync)
-
----
-
-## Step 2: Collect the Learning
+## Step 1: Collect the Learning
 
 Ask the developer these questions:
 
@@ -41,151 +21,52 @@ Ask the developer these questions:
    | `decision` | A choice made with reasoning |
    | `gotcha` | A non-obvious trap to avoid |
 
-3. **Module:** "Which service or package does this relate to? (e.g. `packages/api/auth`, `packages/ai/classifier`, `packages/web/shipments`)"
+3. **Module:** "Which service or package does this relate to? (e.g. `packages/api/auth`, `packages/ai/classifier`)"
 
 4. **Tags:** "Keywords someone might search for, comma-separated. (e.g. `typeorm, migration, deadlock, postgres`)"
 
 5. **Content** — ask for the relevant sections based on type:
 
-   **bug-fix:**
-   - "Describe the problem — what was the symptom?"
-   - "What was the root cause?"
-   - "What was the fix? Include the key code or command."
-   - "Any gotchas or things to watch for next time?"
-
-   **pattern:**
-   - "When should someone use this pattern?"
-   - "Describe the pattern — how does it work?"
-   - "Show an example (code or commands)."
-   - "What are the tradeoffs?"
-
-   **decision:**
-   - "What was decided?"
-   - "Why was this decision made?"
-   - "What alternatives were considered and why rejected?"
-   - "What does this constrain or enable going forward?"
-
-   **gotcha:**
-   - "Describe the trap — what happens if you fall into it?"
-   - "Why does it happen?"
-   - "How do you avoid or recover from it?"
+   **bug-fix:** Problem → Root cause → Fix (include the key code or command) → Watch-outs
+   **pattern:** When to use → How it works → Example → Tradeoffs
+   **decision:** What was decided → Why → Alternatives rejected → Consequences
+   **gotcha:** The trap → Why it happens → How to avoid or recover
 
 ---
 
-## Step 3: Initialise the Store (first run only)
+## Step 2: Output the Structured Learning
 
-```bash
-STORE=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c.get('memory',{}).get('store', os.path.expanduser('~/.claude/roambee-memory')))")
-REMOTE=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c.get('memory',{}).get('remote',''))")
+Format the collected content as a clearly marked block so claude-mem's session capture picks it up with high signal:
 
-mkdir -p "$STORE/bug-fix" "$STORE/pattern" "$STORE/decision" "$STORE/gotcha"
+```
+━━━ TEAM LEARNING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type:   <type>
+Module: <module>
+Tags:   <tags>
+Author: <git config user.name>
 
-if [ ! -d "$STORE/.git" ] && [ -n "$REMOTE" ]; then
-  cd "$STORE"
-  git init -q
-  git remote add origin "$REMOTE"
-  git pull origin main --quiet 2>/dev/null || true
-fi
+## <Title>
+
+### <Section headings appropriate to the type>
+<Content>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
 
-## Step 4: Write the Entry File
-
-```bash
-AUTHOR=$(git config user.name 2>/dev/null || echo "unknown")
-DATE=$(date +%Y-%m-%d)
-TYPE="<type from step 2>"
-SLUG=$(echo "<title from step 2>" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-' | cut -c1-50)
-FILEPATH="$STORE/$TYPE/$DATE-$SLUG.md"
-```
-
-Write the file with this structure — the `related: []` field is intentionally empty for now; it becomes graph edges when the graphify backend is connected:
-
-```markdown
----
-id: <DATE>-<SLUG>
-author: <AUTHOR>
-date: <DATE>
-type: <TYPE>
-module: <MODULE>
-tags: [<TAGS>]
-related: []
----
-
-# <TITLE>
-
-<Sections from Step 2, formatted with ## headings appropriate to the type>
-```
-
-Verify the file was written:
-```bash
-head -8 "$FILEPATH"
-```
-
----
-
-## Step 5: Sync to Team (if git remote configured)
-
-```bash
-REMOTE=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c.get('memory',{}).get('remote',''))")
-
-if [ -n "$REMOTE" ]; then
-  cd "$STORE"
-  git add "$FILEPATH"
-  git commit -q -m "mem: add $TYPE — $SLUG (by $AUTHOR)"
-  git push -q origin main
-  echo "Pushed to team memory remote."
-fi
-```
-
----
-
-## Step 5 (graphify): POST to Graphify Backend
-
-When `memory.backend = "graphify"` in `roambee-config.json`, skip the file write above and POST the structured entry instead:
-
-```bash
-ENDPOINT=$(python3 -c "import json,os; c=json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))); print(c['memory']['endpoint'])")
-
-python3 -c "
-import json, os, urllib.request, datetime
-
-entry = {
-    'id':      '<DATE>-<SLUG>',
-    'author':  '<AUTHOR>',
-    'date':    '<DATE>',
-    'type':    '<TYPE>',
-    'module':  '<MODULE>',
-    'tags':    [<TAGS as list>],
-    'related': [],
-    'title':   '<TITLE>',
-    'content': '<full markdown content>'
-}
-
-req = urllib.request.Request(
-    os.environ['ENDPOINT'] + '/memories',
-    data=json.dumps(entry).encode(),
-    headers={'Content-Type': 'application/json'},
-    method='POST'
-)
-with urllib.request.urlopen(req) as resp:
-    print('Saved to graphify:', resp.read().decode())
-"
-```
-
-_Update the endpoint path and auth headers to match the graphify API when it's ready. Set `memory.backend = \"graphify\"` and `memory.endpoint = \"<url>\"` in `~/.claude/roambee-config.json`._
-
----
-
-## Step 6: Confirm
+## Step 3: Confirm
 
 Tell the developer:
 
 ```
-✅ Saved: $FILEPATH
-   by <AUTHOR> · <DATE> · <TYPE> · <MODULE>
+✅ Learning captured in this session.
 
-Search it later with: /recall <keyword>
-Anyone on the team can find it with the same command.
+claude-mem will index it when this session ends.
+Anyone on the team can find it with:
+
+  /recall <any of your tags or keywords>
+
+For example: /recall <first tag from above>
 ```
+
+> **Note for when graphify/hindsight is ready:** Replace Step 2's output block with a POST to the graphify API. The schema (type, module, tags, title, content) is already structured for import. Update `memory.backend` and `memory.endpoint` in `~/.claude/roambee-config.json` at that point.

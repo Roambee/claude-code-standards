@@ -27,26 +27,17 @@
     },
     "memory": {
       "type": "object",
-      "description": "Shared team memory store used by /remember and /recall",
+      "description": "Team memory config used by /remember and /recall. Currently backed by claude-mem (auto-capture). Fill in when graphify/hindsight is ready.",
       "properties": {
         "backend": {
           "type": "string",
-          "enum": ["local", "graphify"],
-          "default": "local",
-          "description": "Storage backend. 'local' = markdown files + optional git sync. 'graphify' = POST/GET to graphify/hindsight API."
-        },
-        "store": {
-          "type": "string",
-          "default": "~/.claude/roambee-memory",
-          "description": "Local directory for memory files. Used when backend=local."
-        },
-        "remote": {
-          "type": "string",
-          "description": "Git remote URL for team sync (e.g. git@github.com:Roambee/team-memory.git). Optional — if set, /remember pushes and /recall pulls automatically."
+          "enum": ["claude-mem", "graphify"],
+          "default": "claude-mem",
+          "description": "Storage backend. 'claude-mem' = auto-captured sessions via claude-mem plugin (default). 'graphify' = POST/GET to graphify/hindsight API."
         },
         "endpoint": {
           "type": "string",
-          "description": "Base URL of the graphify/hindsight API. Required when backend=graphify."
+          "description": "Base URL of the graphify/hindsight API. Only required when backend=graphify."
         }
       }
     }
