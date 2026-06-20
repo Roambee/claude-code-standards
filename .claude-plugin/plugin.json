@@ -14,7 +14,8 @@
       { "name": "claude-mem",      "source": "thedotmack/claude-mem" },
       { "name": "hookify",         "source": "thedotmack/hookify" },
       { "name": "coderabbit",      "source": "coderabbit-ai/coderabbit-claude" },
-      { "name": "frontend-design", "source": "thedotmack/frontend-design" }
+      { "name": "frontend-design", "source": "thedotmack/frontend-design" },
+      { "name": "ponytail",        "source": "DietrichGebert/ponytail" }
     ],
     "mcpServers": [
       {
