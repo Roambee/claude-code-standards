@@ -45,7 +45,7 @@ Check each `+` line against the tags below. Report the first matching tag per li
 
 **`secret:`** — Hardcoded credential
 - `AKIA[A-Z0-9]{16}` (AWS access key)
-- `Bearer [A-Za-z0-9\-_]{20,}` (Bearer token literal)
+- `Bearer [A-Za-z0-9\-_]{20,}` (Bearer token literal — skip lines beginning with `//`, `*`, or `#`)
 - `password\s*=\s*['"][^'"]{6,}` (hardcoded password assignment)
 - File path ends in `.env` and is not `.env.example`
 - Fix: Use environment variables; add a placeholder entry to `.env.example`
@@ -57,7 +57,7 @@ Check each `+` line against the tags below. Report the first matching tag per li
 
 **`pii:`** — PII field without safeguards noted
 - Field/property/column name matches (case-insensitive): `email`, `phone`, `mobile`, `address`, `fullName`, `firstName`, `lastName`, `dateOfBirth`, `dob`, `ssn`, `nationalId`, `passportNumber`, `full_name`, `first_name`, `last_name`, `date_of_birth`, `national_id`, `passport_number`
-- Fix: Confirm field is encrypted at rest, excluded from logs, and covered by data retention policy before merging
+- Fix: Confirm field is encrypted at rest, excluded from logs, and covered by data retention policy before merging. Use judgment for DTO/filter types (interfaces, query parameters) — flag only when the field is stored, not just read or searched.
 
 **`env-var:`** — Undeclared environment variable
 - Line contains `process.env.<VAR>` and `<VAR>` is not present in `.env.example`
@@ -66,13 +66,13 @@ Check each `+` line against the tags below. Report the first matching tag per li
 
 **`migration:`** — Unsafe or malformed migration
 - File name contains `migration` and does not start with a 13-digit timestamp (e.g. `1717800000000-`)
-- Added lines contain `DROP TABLE`, `DROP COLUMN`, `TRUNCATE`, or `ALTER COLUMN`
-- Migration file has no `down()` method in the added lines (check if `async down(` appears anywhere in the file)
+- File name contains `migration` AND added lines contain `DROP TABLE`, `DROP COLUMN`, `TRUNCATE`, or `ALTER COLUMN`
+- File name contains `migration`, adds an `up()` method in the diff, and `async down(` does not appear anywhere in the full file (read the file, not just the diff additions)
 - Fix: Add reversible `down()` that undoes `up()` exactly; rename to `<timestamp>-<description>.ts`; confirm destructive ops with the user
 
 **`prompt:`** — Inline prompt string
 - A string literal (single-quoted, double-quoted, or backtick) longer than 300 characters
-- Fix: Extract to `prompts/<feature-name>.md` so it can be versioned and reviewed independently
+- Fix: Extract to `prompts/<feature-name>.md` so it can be versioned and reviewed independently. Use judgment — skip if the string is clearly SQL, a regex, a URL, or an error message rather than natural-language prompt text.
 
 **`logging:`** — Wrong logger in NestJS service
 - Line contains `console.log(` or `console.error(` and the file contains `@Injectable()`
@@ -146,4 +146,3 @@ If there are no findings at all: print `Clean. Ship.` and stop (no summary line)
 - Additions only — never flag deletions or context lines
 - Does not apply fixes — lists findings only
 - Does not replace real-time hooks (hook-06, hook-12, etc.) which fire during file writes
-- "stop roambee-review" or "normal mode" to revert to default review behavior
