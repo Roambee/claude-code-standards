@@ -8,10 +8,10 @@ Query, save, and reason over shared Decklar knowledge stored in the Memory Servi
 
 ## Config Check
 
-Before any operation, read wiki config:
+Before any operation, read wiki config and assign shell variables:
 
 ```bash
-python3 -c "
+read -r ENDPOINT AGENT_NAME WORLD_NAME API_KEY_VAR ACCOUNT_ID_VAR <<< "$(python3 -c "
 import json, os
 p = os.path.expanduser('~/.claude/roambee-config.json')
 try:
@@ -20,18 +20,14 @@ try:
     print(w.get('endpoint',''), w.get('agentName',''), w.get('worldName',''), w.get('apiKeyEnvVar',''), w.get('accountIdEnvVar',''))
 except:
     print('', '', '', '', '')
-"
+")"
 ```
 
-If `endpoint` is empty: tell the user **"Wiki not configured — run `/init` to set up."** and stop.
+If `ENDPOINT` is empty: tell the user **"Wiki not configured — run `/init` to set up."** and stop.
 
 Resolve API key and account ID from the env var names:
-- `API_KEY` = value of the env var named by `apiKeyEnvVar`
-- `ACCOUNT_ID` = value of the env var named by `accountIdEnvVar`
 
 ```bash
-API_KEY_VAR="<value of apiKeyEnvVar>"
-ACCOUNT_ID_VAR="<value of accountIdEnvVar>"
 API_KEY=$(eval echo "\$$API_KEY_VAR")
 ACCOUNT_ID=$(eval echo "\$$ACCOUNT_ID_VAR")
 echo "$API_KEY" "$ACCOUNT_ID"
@@ -54,7 +50,7 @@ curl -s -X POST "$ENDPOINT/v1/recall" \
   -H "Content-Type: application/json" \
   -d '{
     "account_id": "'"$ACCOUNT_ID"'",
-    "world_name": "decklar-wiki",
+    "world_name": "'"$WORLD_NAME"'",
     "query": "'"$QUERY"'",
     "top_k": 10
   }'
@@ -94,13 +90,13 @@ curl -s -X POST "$ENDPOINT/v1/digest?wait=false" \
   -H "Content-Type: application/json" \
   -d '{
     "account_id": "'"$ACCOUNT_ID"'",
-    "world_name": "decklar-wiki",
+    "world_name": "'"$WORLD_NAME"'",
     "agent_name": "'"$AGENT_NAME"'",
     "content": "'"$CONTENT"'"
   }'
 ```
 
-Confirm: **"Saved to decklar-wiki. Others can find it with `/wiki <entity name or tag>`."**
+Confirm: **"Saved to $WORLD_NAME. Others can find it with `/wiki <entity name or tag>`."**
 
 ---
 
@@ -117,7 +113,7 @@ curl -s -X POST "$ENDPOINT/v1/decide" \
   -H "Content-Type: application/json" \
   -d '{
     "account_id": "'"$ACCOUNT_ID"'",
-    "world_name": "decklar-wiki",
+    "world_name": "'"$WORLD_NAME"'",
     "agent_name": "'"$AGENT_NAME"'",
     "query": "'"$QUESTION"'",
     "objective": "'"$QUESTION"'",
