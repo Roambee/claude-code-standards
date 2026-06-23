@@ -3,6 +3,10 @@
   "PreToolUse": [
     {
       "matcher": ".*",
+      "command": "$HOME/roambee-claude/hooks/hook-18-wiki-inject.sh"
+    },
+    {
+      "matcher": ".*",
       "command": "$HOME/roambee-claude/hooks/hook-00-plugin-update.sh"
     },
     {
