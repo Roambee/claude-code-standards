@@ -300,6 +300,7 @@ Print a checklist of what was completed:
 ✅ Required plugins added to settings.json
 ✅ Playwright Chromium installed
 ✅ Atlassian MCP authenticated — project: <PROJECT_KEY>
+✅ Decklar Wiki configured — world: decklar-wiki, agent: <AGENT_NAME>
 
 Run /doctor at any time to verify the setup is still healthy.
 ```

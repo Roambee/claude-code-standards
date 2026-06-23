@@ -30,10 +30,9 @@ Resolve API key and account ID from the env var names:
 ```bash
 API_KEY=$(eval echo "\$$API_KEY_VAR")
 ACCOUNT_ID=$(eval echo "\$$ACCOUNT_ID_VAR")
-echo "$API_KEY" "$ACCOUNT_ID"
+[ -z "$API_KEY" ] && { echo "Wiki credentials not set — check WIKI_API_KEY is exported in your shell."; exit 1; }
+[ -z "$ACCOUNT_ID" ] && { echo "Wiki credentials not set — check WIKI_ACCOUNT_ID is exported in your shell."; exit 1; }
 ```
-
-If either resolved value is empty: **"Wiki credentials not set — check that WIKI_API_KEY and WIKI_ACCOUNT_ID are exported in your shell."** and stop.
 
 ---
 
@@ -44,16 +43,21 @@ If either resolved value is empty: **"Wiki credentials not set — check that WI
 Search the wiki for `<query>`. If no query given, ask: "What are you looking for?"
 
 ```bash
+PAYLOAD=$(python3 -c "
+import json, sys
+query = sys.stdin.read().strip()
+print(json.dumps({
+    'account_id': '$ACCOUNT_ID',
+    'world_name': '$WORLD_NAME',
+    'query': query,
+    'top_k': 10
+}))
+" <<< "$QUERY")
 curl -s -X POST "$ENDPOINT/v1/recall" \
   -H "apikey: $API_KEY" \
   -H "x-account-id: $ACCOUNT_ID" \
   -H "Content-Type: application/json" \
-  -d '{
-    "account_id": "'"$ACCOUNT_ID"'",
-    "world_name": "'"$WORLD_NAME"'",
-    "query": "'"$QUERY"'",
-    "top_k": 10
-  }'
+  -d "$PAYLOAD"
 ```
 
 Parse the response — items may be in a top-level array or under a `results`/`items`/`memories` key. For each result, show:
@@ -84,16 +88,21 @@ tags: <tags>
 POST to digest:
 
 ```bash
+PAYLOAD=$(python3 -c "
+import json, sys
+content = sys.stdin.read().strip()
+print(json.dumps({
+    'account_id': '$ACCOUNT_ID',
+    'world_name': '$WORLD_NAME',
+    'agent_name': '$AGENT_NAME',
+    'content': content
+}))
+" <<< "$CONTENT")
 curl -s -X POST "$ENDPOINT/v1/digest?wait=false" \
   -H "apikey: $API_KEY" \
   -H "x-account-id: $ACCOUNT_ID" \
   -H "Content-Type: application/json" \
-  -d '{
-    "account_id": "'"$ACCOUNT_ID"'",
-    "world_name": "'"$WORLD_NAME"'",
-    "agent_name": "'"$AGENT_NAME"'",
-    "content": "'"$CONTENT"'"
-  }'
+  -d "$PAYLOAD"
 ```
 
 Confirm: **"Saved to $WORLD_NAME. Others can find it with `/wiki <entity name or tag>`."**
@@ -107,18 +116,23 @@ Use the Memory Service's reasoning endpoint to answer a question using recalled 
 If no question given, ask: "What do you need to decide or understand?"
 
 ```bash
+PAYLOAD=$(python3 -c "
+import json, sys
+question = sys.stdin.read().strip()
+print(json.dumps({
+    'account_id': '$ACCOUNT_ID',
+    'world_name': '$WORLD_NAME',
+    'agent_name': '$AGENT_NAME',
+    'query': question,
+    'objective': question,
+    'top_k': 10
+}))
+" <<< "$QUESTION")
 curl -s -X POST "$ENDPOINT/v1/decide" \
   -H "apikey: $API_KEY" \
   -H "x-account-id: $ACCOUNT_ID" \
   -H "Content-Type: application/json" \
-  -d '{
-    "account_id": "'"$ACCOUNT_ID"'",
-    "world_name": "'"$WORLD_NAME"'",
-    "agent_name": "'"$AGENT_NAME"'",
-    "query": "'"$QUESTION"'",
-    "objective": "'"$QUESTION"'",
-    "top_k": 10
-  }'
+  -d "$PAYLOAD"
 ```
 
 Present the response directly. If empty or error: fall back to `/wiki <question>` recall and reason over it yourself.
