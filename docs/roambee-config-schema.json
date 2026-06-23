@@ -40,6 +40,32 @@
           "description": "Base URL of the graphify/hindsight API. Only required when backend=graphify."
         }
       }
+    },
+    "wiki": {
+      "type": "object",
+      "description": "Decklar Wiki config used by hook-17, hook-18, and /wiki. Populated by /init Step 8.",
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "description": "Memory Service base URL. e.g. https://memory-staging.decklar.com"
+        },
+        "worldName": {
+          "type": "string",
+          "description": "Memory world name. Always decklar-wiki."
+        },
+        "agentName": {
+          "type": "string",
+          "description": "User identity in the wiki world. A clean human name blob, e.g. heet or heet-shah."
+        },
+        "apiKeyEnvVar": {
+          "type": "string",
+          "description": "Name of the env var holding the API key, e.g. WIKI_API_KEY"
+        },
+        "accountIdEnvVar": {
+          "type": "string",
+          "description": "Name of the env var holding the account ID, e.g. WIKI_ACCOUNT_ID"
+        }
+      }
     }
   }
 }

@@ -183,6 +183,112 @@ print('✅ Jira config saved.')
 
 ---
 
+## Step 8: Decklar Wiki Setup
+
+Ask the developer: **"What's your name for the wiki? (e.g. heet, heet-shah — this is your identity in the shared company knowledge base)"**
+
+Save wiki config to `~/.claude/roambee-config.json`:
+
+```bash
+python3 -c "
+import json, os
+p = os.path.expanduser('~/.claude/roambee-config.json')
+d = {}
+try: d = json.load(open(p))
+except: pass
+d['wiki'] = {
+    'endpoint': 'https://memory-staging.decklar.com',
+    'worldName': 'decklar-wiki',
+    'agentName': '<AGENT_NAME>',
+    'apiKeyEnvVar': 'WIKI_API_KEY',
+    'accountIdEnvVar': 'WIKI_ACCOUNT_ID'
+}
+json.dump(d, open(p, 'w'), indent=2)
+print('Wiki config saved.')
+"
+```
+
+Verify the required env vars are set:
+
+```bash
+python3 -c "
+import os
+missing = []
+if not os.environ.get('WIKI_API_KEY'): missing.append('WIKI_API_KEY')
+if not os.environ.get('WIKI_ACCOUNT_ID'): missing.append('WIKI_ACCOUNT_ID')
+if missing:
+    print('MISSING:', ' '.join(missing))
+    print('Add these to your shell profile (~/.zshrc or ~/.bash_profile) and restart your terminal.')
+else:
+    print('ENV OK')
+"
+```
+
+If `MISSING` is printed, tell the developer to add the env vars to their shell profile and re-run `/init`. Do not proceed to world creation until `ENV OK`.
+
+Create the `decklar-wiki` world if it does not exist:
+
+```bash
+python3 -c "
+import json, os, subprocess, sys
+
+endpoint = 'https://memory-staging.decklar.com'
+api_key = os.environ.get('WIKI_API_KEY', '')
+account_id = os.environ.get('WIKI_ACCOUNT_ID', '')
+
+if not api_key or not account_id:
+    print('Skipping world creation — env vars not set.')
+    sys.exit(0)
+
+# Check if world already exists
+r = subprocess.run([
+    'curl', '-s',
+    f'{endpoint}/v1/worlds?account_id={account_id}&is_active=true',
+    '-H', f'apikey: {api_key}',
+    '-H', f'x-account-id: {account_id}'
+], capture_output=True, text=True)
+
+try:
+    worlds = json.loads(r.stdout)
+    worlds = worlds if isinstance(worlds, list) else worlds.get('worlds', worlds.get('items', []))
+    names = [w.get('world_name', '') for w in worlds if isinstance(w, dict)]
+    if 'decklar-wiki' in names:
+        print('World decklar-wiki already exists — skipping creation.')
+        sys.exit(0)
+except:
+    pass
+
+# Create world
+payload = json.dumps({
+    'account_id': account_id,
+    'world_name': 'decklar-wiki',
+    'description': 'Decklar company knowledge base',
+    'is_active': True
+})
+r = subprocess.run([
+    'curl', '-s', '-X', 'POST', f'{endpoint}/v1/worlds',
+    '-H', f'apikey: {api_key}',
+    '-H', f'x-account-id: {account_id}',
+    '-H', 'Content-Type: application/json',
+    '-d', payload
+], capture_output=True, text=True)
+
+print('World created:', r.stdout[:200] if r.stdout else r.stderr[:200])
+"
+```
+
+Tell the developer:
+```
+✅ Decklar Wiki configured.
+   World: decklar-wiki
+   Agent name: <AGENT_NAME>
+   hook-17 will digest your sessions automatically.
+   hook-18 will inject wiki context at session start.
+   Use /wiki to query or save knowledge manually.
+```
+
+---
+
 ## Step 7: Summary
 
 Print a checklist of what was completed:
