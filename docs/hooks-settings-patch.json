@@ -83,5 +83,11 @@
       "matcher": "Write|Edit",
       "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" $HOME/roambee-claude/hooks/hook-15-subagent-doc-update.sh"
     }
+  ],
+  "Stop": [
+    {
+      "matcher": ".*",
+      "command": "$HOME/roambee-claude/hooks/hook-17-wiki-capture.sh"
+    }
   ]
 }
