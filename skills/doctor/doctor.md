@@ -124,13 +124,29 @@ else:
 
 ---
 
-## Check 6: Playwright Installed
+## Check 6: GitHub CLI
+
+```bash
+if ! command -v gh &>/dev/null; then
+  echo "MISSING"
+else
+  gh auth status 2>&1 | grep -q "Logged in" && echo "AUTHENTICATED" || echo "NOT_AUTHENTICATED"
+fi
+```
+
+- **AUTHENTICATED**: ✅ GitHub CLI authenticated
+- **NOT_AUTHENTICATED**: Auto-fix: run `gh auth login`
+- **MISSING**: ⚠️ Cannot auto-fix. Output: "Install GitHub CLI: `brew install gh`, then run `/init`."
+
+---
+
+## Check 7: Playwright Installed
 
 ```bash
 npx playwright --version 2>/dev/null | grep -q "Version" && echo "INSTALLED" || echo "MISSING"
 ```
 
-- **INSTALLED**: ✅
+- **INSTALLED**: ✅ Playwright installed
 - **MISSING**: Auto-fix: `npx playwright install --with-deps chromium`
 
 ---

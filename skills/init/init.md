@@ -187,6 +187,24 @@ print('✅ Jira config saved.')
 
 ---
 
+## Step 7: GitHub CLI
+
+```bash
+if ! command -v gh &>/dev/null; then
+  echo "❌ GitHub CLI (gh) is not installed."
+  echo "   Install: brew install gh"
+  echo "   Then re-run /init to complete this step."
+else
+  gh auth status 2>&1 | grep -q "Logged in" \
+    && echo "✅ GitHub CLI already authenticated" \
+    || gh auth login
+fi
+```
+
+If `gh auth login` is triggered, follow the browser prompt. When done, verify with `gh auth status`.
+
+---
+
 ## Step 8: Decklar Wiki Setup
 
 Ask the developer: **"What's your name for the wiki? (e.g. heet, heet-shah — this is your identity in the shared company knowledge base)"**
@@ -299,10 +317,11 @@ Print a checklist of what was completed:
 ```
 ✅ AWS CodeArtifact authenticated (token valid 12h)
 ✅ ~/.claude/CLAUDE.md installed
-✅ Hooks installed (will be active after P2 completes)
+✅ Hooks installed (will be active after restart)
 ✅ Required plugins added to settings.json
 ✅ Playwright Chromium installed
 ✅ Atlassian MCP authenticated — project: <PROJECT_KEY>
+✅ GitHub CLI authenticated
 ✅ Decklar Wiki configured — world: decklar-wiki, agent: <AGENT_NAME>
 
 Run /doctor at any time to verify the setup is still healthy.
