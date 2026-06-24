@@ -8,8 +8,8 @@ There are **two header systems** in the monorepo. Choose based on the app's UI s
 
 | App type                                            | Header to use                                  | Import from                                       |
 | --------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
-| **New app using `@decklar/ui-library`**             | `GlobalSearchHeader` + `useGlobalSearchHeader` | `@decklar/ui-library` + `@roambee/client-utility` |
-| **Existing app using `@roambee/client-styleguide`** | `GlobalSearch`                                 | `@roambee/client-styleguide`                      |
+| **New app using `@decklar/ui-library`**             | `GlobalSearchHeader` + `useGlobalSearchHeader` | `@decklar/ui-library` + `@decklar/client-utility` |
+| **Existing app using `@decklar/client-styleguide`** | `GlobalSearch`                                 | `@decklar/client-styleguide`                      |
 
 > **For new apps, always use Pattern 4 (GlobalSearchHeader).** Pattern 1/3 are for existing legacy apps only.
 
@@ -21,7 +21,7 @@ There are **two header systems** in the monorepo. Choose based on the app's UI s
 
 **Used by:** any new app using `@decklar/ui-library`  
 **Header:** `GlobalSearchHeader` from `@decklar/ui-library`  
-**Logic:** `useGlobalSearchHeader` from `@roambee/client-utility` — handles auth, accounts, apps, logout automatically.
+**Logic:** `useGlobalSearchHeader` from `@decklar/client-utility` — handles auth, accounts, apps, logout automatically.
 
 > Full prop/hook API: see the `decklar-header-integration` skill.
 
@@ -31,7 +31,7 @@ import './App.scss';
 import '@decklar/ui-library/styles';
 import { GlobalSearchHeader, TooltipProvider } from '@decklar/ui-library';
 // @ts-ignore
-import { useGlobalSearchHeader } from '@roambee/client-utility';
+import { useGlobalSearchHeader } from '@decklar/client-utility';
 import { useNavigate } from 'react-router-dom';
 import AppLogo from './assets/images/logo.svg';
 
@@ -104,11 +104,11 @@ function App() {
 
 ```tsx
 // App.tsx
-import { GlobalSearch, Loader } from '@roambee/client-styleguide';
-import { API, useAuthUser, EventEmitter } from '@roambee/client-utility';
+import { GlobalSearch, Loader } from '@decklar/client-styleguide';
+import { API, useAuthUser, EventEmitter } from '@decklar/client-utility';
 import { useState, useEffect } from 'react';
 import '@decklar/ui-library/styles';
-import RoambeeLogo from './assets/images/logo.png';
+import DecklarLogo from './assets/images/logo.png';
 
 function App() {
 	const navigate = useNavigate();
@@ -160,7 +160,7 @@ function App() {
 					className="header"
 					user={user}
 					showLogo={true}
-					logo={RoambeeLogo}
+					logo={DecklarLogo}
 					showSearch={false}
 					showNotification={false}
 					title="Your App Title"
@@ -213,7 +213,7 @@ export default function App() {
 ```tsx
 // pages/MainLayout.tsx
 import { Outlet } from 'react-router-dom';
-import { Breadcrumb } from '@roambee/client-styleguide';
+import { Breadcrumb } from '@decklar/client-styleguide';
 import Topbar from './Topbar';
 
 const MainLayout = () => {
@@ -236,8 +236,8 @@ const MainLayout = () => {
 };
 
 // pages/Topbar.tsx
-import { GlobalSearch } from '@roambee/client-styleguide';
-import { API } from '@roambee/client-utility';
+import { GlobalSearch } from '@decklar/client-styleguide';
+import { API } from '@decklar/client-utility';
 
 const Topbar = ({ user }) => {
 	const navigate = useNavigate();
@@ -293,13 +293,13 @@ interface MenuItem {
 
 ## Side Navigation Integration
 
-The side navigation is a separate microfrontend (`@roambee/client-sidenav`) mounted globally in the root config. Individual applications don't need to implement it directly.
+The side navigation is a separate microfrontend (`@decklar/client-sidenav`) mounted globally in the root config. Individual applications don't need to implement it directly.
 
 **Side Navigation Interaction:**
 
 ```tsx
 // Toggle side navigation
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 
 EventEmitter.emit('toggleSideNav', true); // Open
 EventEmitter.emit('toggleSideNav', false); // Close
@@ -374,7 +374,7 @@ Common layout structure used across applications:
 ### Authentication Check
 
 ```tsx
-import { useAuthUser } from '@roambee/client-utility';
+import { useAuthUser } from '@decklar/client-utility';
 
 const { data: user, authenticated, loading } = useAuthUser();
 

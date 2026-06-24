@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Hook 12: Cross-package MFE import guard
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 
 # Only applies inside packages/client/
 echo "$FILE_PATH" | grep -q "packages/client/" || exit 0
@@ -10,12 +10,12 @@ echo "$FILE_PATH" | grep -q "packages/client/" || exit 0
 CURRENT_PKG=$(echo "$FILE_PATH" | sed 's|.*/packages/client/\([^/]*\)/.*|\1|')
 
 # Detect imports from other packages/client/* packages
-BAD_IMPORT=$(echo "$CONTENT" | grep -E "from ['\"](@roambee/|../../)[^'\"]*['\"]" | \
+BAD_IMPORT=$(echo "$CONTENT" | grep -E "from ['\"](@decklar/|../../)[^'\"]*['\"]" | \
   python3 -c "
 import sys, re
 current = '$CURRENT_PKG'
 for line in sys.stdin:
-    m = re.search(r\"from ['\\\"]((@roambee/|../../)([^'\\\"]*))\", line)
+    m = re.search(r\"from ['\\\"]((@decklar/|../../)([^'\\\"]*))\", line)
     if m:
         target = m.group(1)
         # Skip allowed packages

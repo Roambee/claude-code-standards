@@ -1,14 +1,14 @@
-# Roambee Claude Plugin — P1: Foundation & Setup Skills
+# Decklar Claude Plugin — P1: Foundation & Setup Skills
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Create the installable plugin scaffold, the saved-credentials schema, the universal CLAUDE.md template, and the three setup skills (`/init`, `/doctor`, `/new-repo`) that form the foundation every other plan builds on.
 
-**Architecture:** The plugin is a directory of markdown skill files + a `plugin.json` manifest. Setup skills are markdown files that Claude reads and follows step-by-step. All user-specific configuration (AWS, Jira, OpenRouter) is persisted to `~/.claude/roambee-config.json` on first run and reused thereafter.
+**Architecture:** The plugin is a directory of markdown skill files + a `plugin.json` manifest. Setup skills are markdown files that Claude reads and follows step-by-step. All user-specific configuration (AWS, Jira, OpenRouter) is persisted to `~/.claude/decklar-config.json` on first run and reused thereafter.
 
 **Tech Stack:** Claude Code plugin format (`plugin.json` + skill markdown files), Bash for commands within skills, JSON for config persistence, AWS CLI, Atlassian MCP.
 
-**Design spec reference:** `2026-06-06-roambee-claude-standards-plugin-design.md`
+**Design spec reference:** `2026-06-06-decklar-claude-standards-plugin-design.md`
 
 ---
 
@@ -23,7 +23,7 @@
 | Create | `skills/new-repo/new-repo.md` | architecture.md generator |
 
 Config file written at runtime (not in the repo):
-- `~/.claude/roambee-config.json` — credentials + project settings saved by `/init`
+- `~/.claude/decklar-config.json` — credentials + project settings saved by `/init`
 
 ---
 
@@ -36,9 +36,9 @@ Config file written at runtime (not in the repo):
 
 ```json
 {
-  "name": "roambee-claude",
+  "name": "decklar-claude",
   "version": "1.0.0",
-  "description": "Roambee company-wide Claude Code standards and workflow enforcement plugin",
+  "description": "Decklar company-wide Claude Code standards and workflow enforcement plugin",
   "skills": [
     "init",
     "doctor",
@@ -97,24 +97,24 @@ Expected: `✅ Valid JSON`
 ```bash
 git init
 git add plugin.json
-git commit -m "chore: initialise roambee-claude plugin manifest"
+git commit -m "chore: initialise decklar-claude plugin manifest"
 ```
 
 ---
 
-## Task 2: `~/.claude/roambee-config.json` Schema
+## Task 2: `~/.claude/decklar-config.json` Schema
 
 This file is NOT in the repo — it lives on each developer's machine and is written by `/init`. Document its schema here so all skills know what to expect.
 
 **Files:**
-- Create: `docs/roambee-config-schema.json` (reference only — not installed)
+- Create: `docs/decklar-config-schema.json` (reference only — not installed)
 
 - [ ] **Step 1: Create the schema reference**
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "description": "Written by /init to ~/.claude/roambee-config.json. All fields are optional until the feature that needs them is first used.",
+  "description": "Written by /init to ~/.claude/decklar-config.json. All fields are optional until the feature that needs them is first used.",
   "type": "object",
   "properties": {
     "codeartifact": {
@@ -128,7 +128,7 @@ This file is NOT in the repo — it lives on each developer's machine and is wri
     "jira": {
       "type": "object",
       "properties": {
-        "domain":     { "type": "string", "description": "Atlassian domain, e.g. roambee.atlassian.net" },
+        "domain":     { "type": "string", "description": "Atlassian domain, e.g. decklar.atlassian.net" },
         "projectKey": { "type": "string", "description": "Jira project key, e.g. RMB" }
       }
     },
@@ -146,8 +146,8 @@ This file is NOT in the repo — it lives on each developer's machine and is wri
 - [ ] **Step 2: Commit**
 
 ```bash
-git add docs/roambee-config-schema.json
-git commit -m "docs: add roambee-config.json schema reference"
+git add docs/decklar-config-schema.json
+git commit -m "docs: add decklar-config.json schema reference"
 ```
 
 ---
@@ -162,9 +162,9 @@ This is the universal company CLAUDE.md that `/init` installs to `~/.claude/CLAU
 - [ ] **Step 1: Create `templates/CLAUDE.md`**
 
 ```markdown
-# Roambee — Claude Code Global Standards
+# Decklar — Claude Code Global Standards
 
-Installed by `roambee-claude /init`. Do not edit manually — run `/init` to update.
+Installed by `decklar-claude /init`. Do not edit manually — run `/init` to update.
 
 ---
 
@@ -259,11 +259,11 @@ git commit -m "feat: add universal CLAUDE.md template"
 - [ ] **Step 1: Create `skills/init/init.md`**
 
 ````markdown
-# /init — Roambee Machine Setup
+# /init — Decklar Machine Setup
 
 Run once per developer machine. Idempotent — safe to re-run.
 
-**Announce at start:** "Running /init to set up your Roambee Claude Code environment."
+**Announce at start:** "Running /init to set up your Decklar Claude Code environment."
 
 ---
 
@@ -273,7 +273,7 @@ Check for saved credentials:
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 try:
     d = json.load(open(p))
     ca = d.get('codeartifact', {})
@@ -287,11 +287,11 @@ If `accountId` is empty, ask the developer:
 2. "What AWS region is the CodeArtifact domain in? (e.g. ap-south-1, us-east-1)"
 3. "What AWS CLI profile to use? (press Enter for 'default')"
 
-Save to `~/.claude/roambee-config.json` (merge, don't overwrite):
+Save to `~/.claude/decklar-config.json` (merge, don't overwrite):
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 d = {}
 try: d = json.load(open(p))
 except: pass
@@ -308,7 +308,7 @@ print('Credentials saved.')
 Authenticate:
 ```bash
 aws codeartifact login --tool npm \
-  --domain roambee \
+  --domain decklar \
   --domain-owner <accountId> \
   --region <region> \
   --profile <profile> \
@@ -418,14 +418,14 @@ Check if Atlassian MCP is authenticated by calling `mcp__claude_ai_Atlassian__at
 2. Wait for the developer to complete authentication in the browser
 3. Call `mcp__claude_ai_Atlassian__complete_authentication`
 4. Call `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` to list available sites
-5. Ask the developer: "Which Jira site? (e.g. roambee.atlassian.net)"
+5. Ask the developer: "Which Jira site? (e.g. decklar.atlassian.net)"
 6. Ask: "What is the Jira project key? (e.g. RMB)"
-7. Save to `~/.claude/roambee-config.json`:
+7. Save to `~/.claude/decklar-config.json`:
 
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 d = {}
 try: d = json.load(open(p))
 except: pass
@@ -478,11 +478,11 @@ git commit -m "feat: add /init machine setup skill"
 - [ ] **Step 1: Create `skills/doctor/doctor.md`**
 
 ````markdown
-# /doctor — Roambee Setup Health Check
+# /doctor — Decklar Setup Health Check
 
 Verifies the Claude Code environment is correctly set up. Auto-fixes what it can.
 
-**Announce at start:** "Running /doctor to check your Roambee Claude Code setup."
+**Announce at start:** "Running /doctor to check your Decklar Claude Code setup."
 
 ---
 
@@ -491,14 +491,14 @@ Verifies the Claude Code environment is correctly set up. Auto-fixes what it can
 ```bash
 npm ping --registry https://npm.pkg.github.com 2>/dev/null || \
 aws codeartifact get-authorization-token \
-  --domain roambee \
-  --domain-owner $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['accountId'])") \
-  --region $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['region'])") \
+  --domain decklar \
+  --domain-owner $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))['codeartifact']['accountId'])") \
+  --region $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))['codeartifact']['region'])") \
   --query authorizationToken --output text > /dev/null 2>&1 && echo "VALID" || echo "EXPIRED"
 ```
 
 - **VALID**: ✅ CodeArtifact token is active
-- **EXPIRED**: ⚠️ Auto-fix: re-run `aws codeartifact login` using saved credentials from `~/.claude/roambee-config.json`. Same command as Step 1 of `/init`.
+- **EXPIRED**: ⚠️ Auto-fix: re-run `aws codeartifact login` using saved credentials from `~/.claude/decklar-config.json`. Same command as Step 1 of `/init`.
 
 ---
 
@@ -508,7 +508,7 @@ aws codeartifact get-authorization-token \
 test -f ~/.claude/CLAUDE.md && echo "EXISTS" || echo "MISSING"
 ```
 
-- **EXISTS**: Verify it contains the string `Roambee — Claude Code Global Standards`. If not, it's a custom file — warn but don't overwrite.
+- **EXISTS**: Verify it contains the string `Decklar — Claude Code Global Standards`. If not, it's a custom file — warn but don't overwrite.
 - **MISSING**: Auto-fix: copy from plugin `templates/CLAUDE.md`.
 
 ---
@@ -600,13 +600,13 @@ Call `mcp__claude_ai_Atlassian__atlassianUserInfo`.
 ## Check 8: Plugin Up to Date
 
 ```bash
-git -C ~/roambee-claude fetch --quiet 2>/dev/null
-BEHIND=$(git -C ~/roambee-claude rev-list HEAD..origin/main --count 2>/dev/null)
+git -C ~/decklar-claude fetch --quiet 2>/dev/null
+BEHIND=$(git -C ~/decklar-claude rev-list HEAD..origin/main --count 2>/dev/null)
 echo "${BEHIND:-0}"
 ```
 
 - **0**: ✅ Plugin is up to date
-- **>0**: ⚠️ `roambee-claude` is N commit(s) behind. Run `git pull` in `~/roambee-claude/` to update, then re-run `/init` to apply changes.
+- **>0**: ⚠️ `decklar-claude` is N commit(s) behind. Run `git pull` in `~/decklar-claude/` to update, then re-run `/init` to apply changes.
 
 ---
 
@@ -615,7 +615,7 @@ echo "${BEHIND:-0}"
 Print a table:
 
 ```
-Roambee Claude Code Health Check
+Decklar Claude Code Health Check
 ─────────────────────────────────────────
 ✅ CodeArtifact token      active
 ✅ ~/.claude/CLAUDE.md     installed (v1.0.0)
@@ -680,10 +680,10 @@ Using the gathered context, write `architecture.md` at the repo root with this e
 ```markdown
 # [Service/App Name] — Architecture
 
-> Generated by `roambee-claude /new-repo` on [date]. Keep this file updated as the project evolves — Hook 15 will remind you.
+> Generated by `decklar-claude /new-repo` on [date]. Keep this file updated as the project evolves — Hook 15 will remind you.
 
 ## Overview
-[One paragraph: what this service does, who uses it, and where it sits in the Roambee ecosystem]
+[One paragraph: what this service does, who uses it, and where it sits in the Decklar ecosystem]
 
 ## Tech Stack
 | Layer | Technology |
@@ -803,10 +803,10 @@ git commit -m "chore: add hooks-settings-patch.json placeholder (populated in P2
 Add to `~/.claude/settings.json`:
 ```json
 "extraKnownMarketplaces": {
-  "roambee": {
+  "decklar": {
     "source": {
       "source": "github",
-      "repo": "Roambee/claude-code-standards"
+      "repo": "Decklar/claude-code-standards"
     }
   }
 }
@@ -856,7 +856,7 @@ git commit -m "chore: P1 complete — foundation and setup skills"
 ## Self-Review Checklist
 
 - [x] `plugin.json` lists all 21 skills and all dependencies
-- [x] `roambee-config.json` schema documented — all skills know what fields to expect
+- [x] `decklar-config.json` schema documented — all skills know what fields to expect
 - [x] `templates/CLAUDE.md` covers all rules from the design spec
 - [x] `/init` saves credentials on first run and skips re-prompting on subsequent runs
 - [x] `/init` installs hooks, plugins, Playwright, and Atlassian MCP in one pass

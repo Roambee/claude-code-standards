@@ -5,8 +5,8 @@ Complete file-by-file guide for creating a new Single-SPA micro-frontend app.
 Replace all placeholders:
 
 -   `__PKG_NAME__` → kebab-case (e.g., `fleet-ops`)
--   `__FULL_NAME__` → `@roambee/client-__PKG_NAME__`
--   `__BUNDLE__` → `roambee-client-__PKG_NAME__`
+-   `__FULL_NAME__` → `@decklar/client-__PKG_NAME__`
+-   `__BUNDLE__` → `decklar-client-__PKG_NAME__`
 -   `__PORT__` → next available port (3022+)
 -   `__TITLE__` → display title (e.g., "Fleet Ops")
 
@@ -18,11 +18,11 @@ Replace all placeholders:
 >
 > -   `@decklar/ui-library` — REQUIRED. All UI components come from here. Do NOT use MUI (`@mui/material`, `@emotion/react`, `@emotion/styled`) in new apps.
 > -   `@carbon/icons-react` — REQUIRED. Used for icons.
-> -   `@roambee/client-styleguide` — Do NOT add as a dependency. It is resolved as a single-spa external via the import map.
+> -   `@decklar/client-styleguide` — Do NOT add as a dependency. It is resolved as a single-spa external via the import map.
 
 ```json
 {
-	"name": "@roambee/client-__PKG_NAME__",
+	"name": "@decklar/client-__PKG_NAME__",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -102,7 +102,7 @@ Replace all placeholders:
 		"jsx": "react-jsx",
 		"declarationDir": "dist"
 	},
-	"files": ["src/roambee-client-__PKG_NAME__.tsx"],
+	"files": ["src/decklar-client-__PKG_NAME__.tsx"],
 	"include": ["src/**/*"],
 	"exclude": ["src/**/*.test*"]
 }
@@ -110,7 +110,7 @@ Replace all placeholders:
 
 ## webpack.config.js
 
-> **IMPORTANT:** This config includes the PostCSS `@layer` removal plugin required for `@decklar/ui-library` to work alongside `@roambee/client-styleguide`'s GlobalSearch header. See [postcss-remove-layer.cjs](#postcss-remove-layercjs) below.
+> **IMPORTANT:** This config includes the PostCSS `@layer` removal plugin required for `@decklar/ui-library` to work alongside `@decklar/client-styleguide`'s GlobalSearch header. See [postcss-remove-layer.cjs](#postcss-remove-layercjs) below.
 
 ```javascript
 const webpack = require('webpack');
@@ -120,7 +120,7 @@ const removeLayerPlugin = require('./postcss-remove-layer.cjs');
 
 module.exports = (webpackConfigEnv, argv) => {
 	const defaultConfig = singleSpaDefaults({
-		orgName: 'roambee',
+		orgName: 'decklar',
 		projectName: 'client-__PKG_NAME__',
 		webpackConfigEnv,
 		argv
@@ -154,7 +154,7 @@ module.exports = (webpackConfigEnv, argv) => {
 
 	// Add postcss-loader to the default .css rule to strip @layer wrappers.
 	// This fixes CSS cascade conflicts: @decklar/ui-library uses Tailwind v4
-	// (@layer-based) while @roambee/client-styleguide injects unlayered resets
+	// (@layer-based) while @decklar/client-styleguide injects unlayered resets
 	// via styled-components' createGlobalStyle — unlayered always beats @layer.
 	merged.module.rules.forEach((rule) => {
 		if (rule.test && rule.test.toString() === '/\\.css$/i' && Array.isArray(rule.use)) {
@@ -177,7 +177,7 @@ module.exports = (webpackConfigEnv, argv) => {
 
 ## postcss-remove-layer.cjs
 
-> **Why this file exists:** `@decklar/ui-library` uses Tailwind CSS v4 which wraps all styles in `@layer` (base, components, utilities). The `GlobalSearch` header from `@roambee/client-styleguide` injects **unlayered** CSS resets at runtime via `createGlobalStyle`. In the CSS cascade, unlayered styles **always beat** `@layer`-ed styles — so GlobalSearch's `button { background: transparent }` overrides the UI library's `.rb-button` class. This plugin strips `@layer` wrappers so both compete on specificity instead — Tailwind class selectors (`.rb-button`) naturally beat element selectors (`button`).
+> **Why this file exists:** `@decklar/ui-library` uses Tailwind CSS v4 which wraps all styles in `@layer` (base, components, utilities). The `GlobalSearch` header from `@decklar/client-styleguide` injects **unlayered** CSS resets at runtime via `createGlobalStyle`. In the CSS cascade, unlayered styles **always beat** `@layer`-ed styles — so GlobalSearch's `button { background: transparent }` overrides the UI library's `.rb-button` class. This plugin strips `@layer` wrappers so both compete on specificity instead — Tailwind class selectors (`.rb-button`) naturally beat element selectors (`button`).
 >
 > **Note:** Next.js apps (e.g., `smartbee-ai`, `admin-panel` with Vite) do NOT need this file — they manage PostCSS and Tailwind via their own standard configs and don't share this cascade conflict.
 
@@ -186,7 +186,7 @@ module.exports = (webpackConfigEnv, argv) => {
  * PostCSS plugin to remove @layer wrappers from CSS.
  *
  * @decklar/ui-library uses Tailwind CSS v4 which wraps styles in @layer
- * (base, components, utilities). When mixed with @roambee/client-styleguide's
+ * (base, components, utilities). When mixed with @decklar/client-styleguide's
  * GlobalSearch, which injects unlayered CSS resets via styled-components'
  * createGlobalStyle, the unlayered resets always win in the CSS cascade
  * (unlayered > @layer). Removing @layer lets both compete on specificity,
@@ -203,7 +203,7 @@ module.exports = () => ({
 module.exports.postcss = true;
 ```
 
-## src/roambee-client-**PKG_NAME**.tsx
+## src/decklar-client-**PKG_NAME**.tsx
 
 ```typescript
 import React from 'react';
@@ -263,9 +263,9 @@ import './App.scss';
 import '@decklar/ui-library/styles';
 
 // @ts-ignore
-import { GlobalSearch } from '@roambee/client-styleguide';
+import { GlobalSearch } from '@decklar/client-styleguide';
 // @ts-ignore
-import { API, useAuthUser, setRoutes, EventEmitter } from '@roambee/client-utility';
+import { API, useAuthUser, setRoutes, EventEmitter } from '@decklar/client-utility';
 import { Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import routes from './routes';
@@ -409,7 +409,7 @@ export default routes;
 
 ```typescript
 // @ts-ignore
-import { getAuthUser } from '@roambee/client-utility';
+import { getAuthUser } from '@decklar/client-utility';
 
 function Home() {
 	const user = getAuthUser();
@@ -448,8 +448,8 @@ Add inside `<main>`:
 
 ```html
 <route path="__PKG_NAME__">
-	<application name="@roambee/client-sidenav"></application>
-	<application name="@roambee/client-__PKG_NAME__" loader="hexaLoader"></application>
+	<application name="@decklar/client-sidenav"></application>
+	<application name="@decklar/client-__PKG_NAME__" loader="hexaLoader"></application>
 </route>
 ```
 
@@ -459,8 +459,8 @@ Add URL variable and import map entry:
 
 ```javascript
 const __CAMEL__Url = process.env.CLIENT___UPPER___URL
-    || (isLocal ? 'http://localhost:__PORT__' : 'https://__PKG_NAME__.hive.roambee.com');
+    || (isLocal ? 'http://localhost:__PORT__' : 'https://__PKG_NAME__.hive.decklar.com');
 
 // In imports object:
-'@roambee/client-__PKG_NAME__': `${__CAMEL__Url}/roambee-client-__PKG_NAME__.js`,
+'@decklar/client-__PKG_NAME__': `${__CAMEL__Url}/decklar-client-__PKG_NAME__.js`,
 ```

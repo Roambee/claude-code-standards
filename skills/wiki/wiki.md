@@ -13,7 +13,7 @@ Before any operation, read wiki config and assign shell variables:
 ```bash
 read -r ENDPOINT AGENT_NAME WORLD_NAME API_KEY_VAR ACCOUNT_ID_VAR <<< "$(python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 try:
     d = json.load(open(p))
     w = d.get('wiki', {})

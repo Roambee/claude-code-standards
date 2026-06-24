@@ -66,7 +66,7 @@ Pure async functions — no React, no hooks. One file per resource.
 ```ts
 // src/api/services/items.service.ts
 // @ts-ignore
-import { API, getAuthUser } from '@roambee/client-utility';
+import { API, getAuthUser } from '@decklar/client-utility';
 import { ENDPOINTS } from '../endpoints';
 
 export const itemsService = {
@@ -85,7 +85,7 @@ export const itemsService = {
 
 ```ts
 // @ts-ignore
-import { API, getAuthUser, EventEmitter } from '@roambee/client-utility';
+import { API, getAuthUser, EventEmitter } from '@decklar/client-utility';
 
 // GET — always via service function, consumed by a useQuery hook
 // POST / PUT / DELETE — via service function, called in useMutation

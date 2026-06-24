@@ -12,7 +12,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useUrlFilters } from '@roambee/client-utility';
+import { useUrlFilters } from '@decklar/client-utility';
 import { useResourceList } from './useResource';
 
 // ─── 1. Filter shape ──────────────────────────────────────────────────────

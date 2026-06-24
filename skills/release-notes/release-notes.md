@@ -55,7 +55,7 @@ ORDER BY issuetype ASC, priority DESC
 
 **Product Changelog (plain English — for Confluence or Slack):**
 ```
-🚀 Roambee v2.4.0 is here!
+🚀 Decklar v2.4.0 is here!
 
 ✨ New features:
 • Export shipment data to CSV directly from the dashboard

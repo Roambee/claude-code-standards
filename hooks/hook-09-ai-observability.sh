@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 9: AI observability reminder — fires once per session
 
-source "$HOME/roambee-claude/hooks/lib.sh"
+source "$HOME/decklar-claude/hooks/lib.sh"
 
 told_this_session "hook-09-ai-observability" && exit 0
 

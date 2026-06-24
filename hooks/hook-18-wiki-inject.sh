@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 18: Wiki inject — fetches top-5 wiki entries and injects at session start.
 # Fires once per session via told_this_session dedup.
-source "$HOME/roambee-claude/hooks/lib.sh"
+source "$HOME/decklar-claude/hooks/lib.sh"
 
 told_this_session "hook-18-wiki-inject" && exit "$ALLOW"
 

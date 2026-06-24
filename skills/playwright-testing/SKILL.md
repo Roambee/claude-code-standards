@@ -1,7 +1,7 @@
 ---
 name: playwright-testing
 description: >
-  Guide for writing Playwright tests in the Roambee/Decklar monorepo. Covers
+  Guide for writing Playwright tests in the Decklar/Decklar monorepo. Covers
   project structure, spec conventions, page object model, auth patterns,
   selector preferences, Zephyr annotation, and cleanup. Use whenever writing
   a new spec file or page object in tests/apps/honeycomb-portal-ui-tests/.
@@ -12,7 +12,7 @@ argument-hint: ""
 
 Writing a Playwright test or page object for the Honeycomb Portal UI test suite.
 
-**Announce at start:** "Loading playwright-testing. Applying Roambee test conventions."
+**Announce at start:** "Loading playwright-testing. Applying Decklar test conventions."
 
 ---
 
@@ -201,7 +201,7 @@ const loginActions = new LoginActionsPage(page);
 // Options:
 await loginActions.loginAsSuperUser();       // SUPER_USER_EMAIL / SUPER_USER_PASSWORD
 await loginActions.loginAsAdmin();           // ADMIN_EMAIL / ADMIN_PASSWORD
-await loginActions.loginAsRoambeeAdmin();    // ROAMBEE_ADMIN_EMAIL / ROAMBEE_ADMIN_PASSWORD
+await loginActions.loginAsDecklarAdmin();    // DECKLAR_ADMIN_EMAIL / DECKLAR_ADMIN_PASSWORD
 
 // Always assert login after login call
 await loginActions.expectUserLoggedIn();
@@ -307,7 +307,7 @@ Required env vars (validated in `global-setup.ts`):
 |---|---|
 | `SUPER_USER_EMAIL` / `SUPER_USER_PASSWORD` | Super user login |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Admin user login |
-| `ROAMBEE_ADMIN_EMAIL` / `ROAMBEE_ADMIN_PASSWORD` | Roambee admin login |
+| `DECKLAR_ADMIN_EMAIL` / `DECKLAR_ADMIN_PASSWORD` | Decklar admin login |
 | `HIVE_USER_EMAIL` / `HIVE_USER_PASSWORD` | Hive portal login |
 | `BASE_URL` | Target environment (default: `https://view-staging.decklar.com`) |
 | `TEST_STAGE` | Controls browser matrix (`pr`, `full-regression`, `nightly`, `release`) |

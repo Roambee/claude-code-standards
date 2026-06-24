@@ -26,13 +26,13 @@
 
 ### Pattern A: URL-persisted filters with `useUrlFilters` (preferred for paginated tables)
 
-Use `useUrlFilters` from `@roambee/client-utility` when filters should survive page refresh, browser back/forward navigation, and be shareable via URL. **No separate `useResourceFilters.ts` file is needed** — call the hook directly in the page hook.
+Use `useUrlFilters` from `@decklar/client-utility` when filters should survive page refresh, browser back/forward navigation, and be shareable via URL. **No separate `useResourceFilters.ts` file is needed** — call the hook directly in the page hook.
 
 ```ts
 // src/api/hooks/useResourcePage.ts
 import { useSearchParams } from 'react-router-dom';
-import { useUrlFilters } from '@roambee/client-utility';
-import type { UrlFiltersConfig } from '@roambee/client-utility';
+import { useUrlFilters } from '@decklar/client-utility';
+import type { UrlFiltersConfig } from '@decklar/client-utility';
 import { useResourceList } from './useResource';
 
 interface ResourceFilters {

@@ -15,11 +15,11 @@ Replace `{PORT}` with the assigned port number.
 > -   `@carbon/icons-react` — REQUIRED. Used for icons.
 > -   `zod` — Add when using `Form` + Zod validation from `@decklar/ui-library`.
 > -   `@emotion/react`, `@emotion/styled`, `@mui/material` — Do NOT include. New apps use `@decklar/ui-library`, not MUI directly. These are dead weight.
-> -   `@roambee/client-styleguide` — Do NOT add as a dependency. It is resolved as a single-spa external via the import map (shared across microfrontends).
+> -   `@decklar/client-styleguide` — Do NOT add as a dependency. It is resolved as a single-spa external via the import map (shared across microfrontends).
 
 ```json
 {
-	"name": "@roambee/client-{app-name}",
+	"name": "@decklar/client-{app-name}",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -94,7 +94,7 @@ Replace `{PORT}` with the assigned port number.
 
 ## webpack.config.js
 
-> **IMPORTANT:** This config includes the PostCSS `@layer` removal plugin required for `@decklar/ui-library` to work alongside `@roambee/client-styleguide`'s GlobalSearch header. See [postcss-remove-layer.cjs](#postcss-remove-layercjs) below.
+> **IMPORTANT:** This config includes the PostCSS `@layer` removal plugin required for `@decklar/ui-library` to work alongside `@decklar/client-styleguide`'s GlobalSearch header. See [postcss-remove-layer.cjs](#postcss-remove-layercjs) below.
 
 ```javascript
 const webpack = require('webpack');
@@ -104,7 +104,7 @@ const removeLayerPlugin = require('./postcss-remove-layer.cjs');
 
 module.exports = (webpackConfigEnv, argv) => {
 	const defaultConfig = singleSpaDefaults({
-		orgName: 'roambee',
+		orgName: 'decklar',
 		projectName: 'client-{app-name}',
 		webpackConfigEnv,
 		argv
@@ -138,7 +138,7 @@ module.exports = (webpackConfigEnv, argv) => {
 
 	// Add postcss-loader to the default .css rule to strip @layer wrappers.
 	// This fixes CSS cascade conflicts: @decklar/ui-library uses Tailwind v4
-	// (@layer-based) while @roambee/client-styleguide injects unlayered resets
+	// (@layer-based) while @decklar/client-styleguide injects unlayered resets
 	// via styled-components' createGlobalStyle — unlayered always beats @layer.
 	merged.module.rules.forEach((rule) => {
 		if (rule.test && rule.test.toString() === '/\\.css$/i' && Array.isArray(rule.use)) {
@@ -161,7 +161,7 @@ module.exports = (webpackConfigEnv, argv) => {
 
 ## postcss-remove-layer.cjs
 
-> **Why this file exists:** `@decklar/ui-library` uses Tailwind CSS v4 which wraps all styles in `@layer` (base, components, utilities). The `GlobalSearch` header from `@roambee/client-styleguide` injects **unlayered** CSS resets at runtime via `createGlobalStyle`. In the CSS cascade, unlayered styles **always beat** `@layer`-ed styles. This plugin strips `@layer` wrappers so both compete on specificity instead — Tailwind class selectors (`.rb-button`) naturally beat GlobalStyle element selectors (`button`).
+> **Why this file exists:** `@decklar/ui-library` uses Tailwind CSS v4 which wraps all styles in `@layer` (base, components, utilities). The `GlobalSearch` header from `@decklar/client-styleguide` injects **unlayered** CSS resets at runtime via `createGlobalStyle`. In the CSS cascade, unlayered styles **always beat** `@layer`-ed styles. This plugin strips `@layer` wrappers so both compete on specificity instead — Tailwind class selectors (`.rb-button`) naturally beat GlobalStyle element selectors (`button`).
 
 ```javascript
 module.exports = () => ({
@@ -186,7 +186,7 @@ module.exports.postcss = true;
 		"jsx": "react-jsx",
 		"declarationDir": "dist"
 	},
-	"files": ["src/roambee-client-{app-name}.tsx"],
+	"files": ["src/decklar-client-{app-name}.tsx"],
 	"include": ["src/**/*"],
 	"exclude": ["src/**/*.test*"]
 }

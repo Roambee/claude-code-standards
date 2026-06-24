@@ -1,16 +1,16 @@
 {
-  "name": "roambee",
+  "name": "decklar",
   "owner": {
-    "name": "Roambee Engineering"
+    "name": "Decklar Engineering"
   },
   "metadata": {
-    "description": "Roambee company-wide Claude Code standards and workflow enforcement"
+    "description": "Decklar company-wide Claude Code standards and workflow enforcement"
   },
   "plugins": [
     {
-      "name": "roambee-claude",
+      "name": "decklar-claude",
       "source": ".",
-      "description": "Enforces consistent development standards across Roambee engineering teams via 21 skills and 16 hooks — covers app developers (React microfrontends, NestJS) and AI developers (FastAPI, LLM integrations, agentic workflows)."
+      "description": "Enforces consistent development standards across Decklar engineering teams via 21 skills and 16 hooks — covers app developers (React microfrontends, NestJS) and AI developers (FastAPI, LLM integrations, agentic workflows)."
     }
   ]
 }

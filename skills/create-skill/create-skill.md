@@ -1,8 +1,8 @@
-# /create-skill — Roambee Skill Creator
+# /create-skill — Decklar Skill Creator
 
-Use when a developer wants to write a new Claude Code skill for the Roambee plugin.
+Use when a developer wants to write a new Claude Code skill for the Decklar plugin.
 
-**Announce at start:** "Loading create-skill. Let's build a new Roambee skill."
+**Announce at start:** "Loading create-skill. Let's build a new Decklar skill."
 
 ---
 
@@ -31,7 +31,7 @@ If a similar skill already exists, read it and ask: "There's already a `/<existi
 
 ## Step 3: Draft the Skill
 
-Write a draft using this exact format — every Roambee skill follows it:
+Write a draft using this exact format — every Decklar skill follows it:
 
 ```markdown
 # /<name> — <One-line title>
@@ -51,7 +51,7 @@ Write a draft using this exact format — every Roambee skill follows it:
 - Every step must have concrete content: a bash command, an MCP tool call, a code snippet, or an explicit question to ask the user
 - No placeholder steps like "implement the logic" or "handle the response" — show the actual command or code
 - If the skill touches Jira, use `mcp__claude_ai_Atlassian__*` tools (reference `/plan` or `/pr` for examples)
-- If the skill reads config, use `~/.claude/roambee-config.json` via `python3 -c "import json,os; ..."`
+- If the skill reads config, use `~/.claude/decklar-config.json` via `python3 -c "import json,os; ..."`
 - If the skill references Jira tickets, extract them with `grep -oE 'RMB-[0-9]+'`
 
 **Good skill reference examples to read for format:**
@@ -103,4 +103,4 @@ git commit -m "feat: add <name> skill"
 
 ## Step 8: Offer to Contribute
 
-Ask: "This skill is now available locally. Would you like to contribute it to `Roambee/claude-code-standards` so all engineers get it automatically? If yes, run `/contribute-skill`."
+Ask: "This skill is now available locally. Would you like to contribute it to `Decklar/claude-code-standards` so all engineers get it automatically? If yes, run `/contribute-skill`."

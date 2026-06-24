@@ -8,7 +8,7 @@ Pick up your next Jira task and create the branch without touching Jira manually
 
 ## Step 1: Fetch Sprint Tickets
 
-Read `~/.claude/roambee-config.json` for `jira.projectKey`.
+Read `~/.claude/decklar-config.json` for `jira.projectKey`.
 
 Call `mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql`:
 ```

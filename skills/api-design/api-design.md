@@ -18,7 +18,7 @@ Use when designing or reviewing a new API endpoint in NestJS.
 Always use `ResponseHandlerService`. Never call `res.json()` directly.
 
 ```typescript
-import { ResponseHandlerService } from '@roambee/platform-utility';
+import { ResponseHandlerService } from '@decklar/platform-utility';
 
 @Get()
 async getShipments(@Query() query: GetShipmentsDto) {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 8: Prompt-as-code reminder
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 
 # Check for string literals > 300 chars (rough proxy for embedded prompts)
 if echo "$CONTENT" | python3 -c "

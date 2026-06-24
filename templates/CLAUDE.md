@@ -1,6 +1,6 @@
-# Roambee — Claude Code Global Standards
+# Decklar — Claude Code Global Standards
 
-Installed by `roambee-claude /init`. Do not edit manually — run `/init` to update.
+Installed by `decklar-claude /init`. Do not edit manually — run `/init` to update.
 
 ---
 

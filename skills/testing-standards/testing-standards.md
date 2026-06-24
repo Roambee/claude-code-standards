@@ -12,7 +12,7 @@ Use before writing any `*.test.ts`, `*.spec.ts`, or `test_*.py` file.
 
 **Cross-MFE mock pattern:**
 ```typescript
-jest.mock('@roambee/client-utility', () => ({
+jest.mock('@decklar/client-utility', () => ({
   EventEmitter: {
     emit: jest.fn(),
     on: jest.fn(),
@@ -45,7 +45,7 @@ it('fetches shipments', async () => {
 
 **EventEmitter-driven test pattern:**
 ```typescript
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 
 it('emits showSnackbar on error', () => {
   render(<MyComponent />);
@@ -148,7 +148,7 @@ Dev server must be running first. Screenshots saved to `playwright-report/screen
 After tests pass, upload screenshots as Jira attachments:
 ```bash
 curl -X POST \
-  "https://$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['jira']['domain'])")/rest/api/3/issue/${TICKET}/attachments" \
+  "https://$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))['jira']['domain'])")/rest/api/3/issue/${TICKET}/attachments" \
   -H "X-Atlassian-Token: no-check" \
   -H "Authorization: Bearer ${JIRA_TOKEN}" \
   -F "file=@playwright-report/screenshots/feature-name.png"

@@ -69,4 +69,4 @@ Anyone on the team can find it with:
 For example: /recall <first tag from above>
 ```
 
-> **Note for when graphify/hindsight is ready:** Replace Step 2's output block with a POST to the graphify API. The schema (type, module, tags, title, content) is already structured for import. Update `memory.backend` and `memory.endpoint` in `~/.claude/roambee-config.json` at that point.
+> **Note for when graphify/hindsight is ready:** Replace Step 2's output block with a POST to the graphify API. The schema (type, module, tags, title, content) is already structured for import. Update `memory.backend` and `memory.endpoint` in `~/.claude/decklar-config.json` at that point.

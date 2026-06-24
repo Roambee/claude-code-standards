@@ -9,7 +9,7 @@
  * Add / remove filter predicates to match your API's supported $filter expressions.
  */
 
-import { API } from '@roambee/client-utility';
+import { API } from '@decklar/client-utility';
 // Import ENDPOINTS from your endpoints.ts
 // import { ENDPOINTS } from '../endpoints';
 

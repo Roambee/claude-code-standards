@@ -51,7 +51,7 @@ export const queryKeys = {
 
 // ─── 3. SERVICE (src/api/services/resource.service.ts) ────────────────────
 // @ts-ignore
-import { API, getAuthUser } from '@roambee/client-utility';
+import { API, getAuthUser } from '@decklar/client-utility';
 // Replace ResourceType / CreateResourcePayload / UpdateResourcePayload with your real types
 type ResourceType = Record<string, unknown>;
 type CreateResourcePayload = Record<string, unknown>;
@@ -84,7 +84,7 @@ export const resourceService = {
 // ─── 4. BASE QUERY HOOKS (src/api/hooks/useResource.ts) ─────────────────
 import { useQuery, useMutation, useQueryClient, keepPreviousData, type UseQueryOptions } from '@tanstack/react-query';
 // @ts-ignore
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 
 // List — accepts select for per-page transforms without splitting the cache
 export const useResourceList = <TData = ResourceType[]>(params?: ResourceListParams, options?: Omit<UseQueryOptions<ResourceType[], Error, TData>, 'queryKey' | 'queryFn'>) =>

@@ -1,11 +1,11 @@
-# /doctor — Roambee Setup Health Check
+# /doctor — Decklar Setup Health Check
 
 Verifies the Claude Code environment is correctly set up. Auto-fixes what it can.
 
-**Announce at start:** "Running /doctor to check your Roambee Claude Code setup."
+**Announce at start:** "Running /doctor to check your Decklar Claude Code setup."
 
 ```bash
-PLUGIN_DIR=$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json'))).get('pluginDir', os.path.expanduser('~/roambee-claude')))")
+PLUGIN_DIR=$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json'))).get('pluginDir', os.path.expanduser('~/decklar-claude')))")
 ```
 
 ---
@@ -13,20 +13,20 @@ PLUGIN_DIR=$(python3 -c "import json,os; print(json.load(open(os.path.expanduser
 ## Check 1: AWS CodeArtifact Token
 
 ```bash
-CONFIG_EXISTS=$(test -f ~/.claude/roambee-config.json && echo "YES" || echo "NO")
+CONFIG_EXISTS=$(test -f ~/.claude/decklar-config.json && echo "YES" || echo "NO")
 if [ "$CONFIG_EXISTS" = "NO" ]; then
-  echo "⚠️ ~/.claude/roambee-config.json not found. Run /init first."
+  echo "⚠️ ~/.claude/decklar-config.json not found. Run /init first."
 else
   aws codeartifact get-authorization-token \
-    --domain roambee \
-    --domain-owner $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['accountId'])") \
-    --region $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['codeartifact']['region'])") \
+    --domain decklar \
+    --domain-owner $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))['codeartifact']['accountId'])") \
+    --region $(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))['codeartifact']['region'])") \
     --query authorizationToken --output text > /dev/null 2>&1 && echo "VALID" || echo "EXPIRED"
 fi
 ```
 
 - **VALID**: ✅ CodeArtifact token is active
-- **EXPIRED**: ⚠️ Auto-fix: re-run `aws codeartifact login` using saved credentials from `~/.claude/roambee-config.json`. Same command as Step 1 of `/init`.
+- **EXPIRED**: ⚠️ Auto-fix: re-run `aws codeartifact login` using saved credentials from `~/.claude/decklar-config.json`. Same command as Step 1 of `/init`.
 
 ---
 
@@ -36,7 +36,7 @@ fi
 test -f ~/.claude/CLAUDE.md && echo "EXISTS" || echo "MISSING"
 ```
 
-- **EXISTS**: Verify it contains the string `Roambee — Claude Code Global Standards`. If not, it's a custom file — warn but don't overwrite.
+- **EXISTS**: Verify it contains the string `Decklar — Claude Code Global Standards`. If not, it's a custom file — warn but don't overwrite.
 - **MISSING**: Auto-fix: copy from plugin `templates/CLAUDE.md`.
 
 ---
@@ -140,7 +140,7 @@ print('MISSING: ' + ' '.join(missing) if missing else 'SET')
 ```bash
 CREDS_FILE="$PLUGIN_DIR/config/wiki-env.sh"
 ZSHRC="$HOME/.zshrc"
-MARKER="# roambee-wiki-env"
+MARKER="# decklar-wiki-env"
 
 # Only append if not already present
 if ! grep -q "$MARKER" "$ZSHRC" 2>/dev/null; then
@@ -166,7 +166,7 @@ echo "${BEHIND:-0}"
 ```
 
 - **0**: ✅ Plugin is up to date
-- **>0**: ⚠️ Plugin is N commit(s) behind. Run `git pull` in `~/roambee-claude/` to update, then re-run `/init`.
+- **>0**: ⚠️ Plugin is N commit(s) behind. Run `git pull` in `~/decklar-claude/` to update, then re-run `/init`.
 
 ---
 
@@ -175,7 +175,7 @@ echo "${BEHIND:-0}"
 Print a table:
 
 ```
-Roambee Claude Code Health Check
+Decklar Claude Code Health Check
 ─────────────────────────────────────────
 ✅ CodeArtifact token      active
 ✅ ~/.claude/CLAUDE.md     installed

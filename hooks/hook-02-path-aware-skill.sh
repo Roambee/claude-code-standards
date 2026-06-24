@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 2: Path-aware skill reminder — context injection based on file path
 
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 
 case "$FILE_PATH" in
   */src/components/*)

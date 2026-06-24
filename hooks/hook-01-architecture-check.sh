@@ -2,7 +2,7 @@
 # Hook 1: Architecture check — hard block if architecture.md missing
 # Runs on first Write/Edit per session in a git repo
 
-SESSION_FLAG="/tmp/roambee-hook1-$$-checked"
+SESSION_FLAG="/tmp/decklar-hook1-$$-checked"
 [ -f "$SESSION_FLAG" ] && exit 0
 
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)

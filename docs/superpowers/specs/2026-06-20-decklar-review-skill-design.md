@@ -1,13 +1,13 @@
-# /roambee-review Skill Design
+# /decklar-review Skill Design
 
 **Date:** 2026-06-20
 **Status:** Approved
 
 ## Summary
 
-A single SKILL.md that instructs Claude to run a git diff, analyze additions for both Roambee standards violations and over-engineering patterns, and print one finding per line in a flat tagged list. No scripts, no helpers — Claude runs the diff and does the analysis in-context.
+A single SKILL.md that instructs Claude to run a git diff, analyze additions for both Decklar standards violations and over-engineering patterns, and print one finding per line in a flat tagged list. No scripts, no helpers — Claude runs the diff and does the analysis in-context.
 
-Also adds `ponytail` as an explicit plugin dependency so all Roambee devs get it on install.
+Also adds `ponytail` as an explicit plugin dependency so all Decklar devs get it on install.
 
 ---
 
@@ -15,8 +15,8 @@ Also adds `ponytail` as an explicit plugin dependency so all Roambee devs get it
 
 | Command | Diff source |
 |---|---|
-| `/roambee-review` | `git diff main` — full branch, PR-ready check |
-| `/roambee-review --staged` | `git diff --staged` — mid-development check |
+| `/decklar-review` | `git diff main` — full branch, PR-ready check |
+| `/decklar-review --staged` | `git diff --staged` — mid-development check |
 
 If the diff is empty: print `Nothing to review.` and stop.
 
@@ -80,7 +80,7 @@ If nothing found: `Clean. Ship.`
 
 | File | Change |
 |---|---|
-| `skills/roambee-review/SKILL.md` | New — the skill itself |
+| `skills/decklar-review/SKILL.md` | New — the skill itself |
 | `.claude-plugin/plugin.json` | Add `ponytail` to `dependencies.plugins` |
 
 ---

@@ -19,7 +19,7 @@ New apps use `GlobalSearchHeader` which renders its own top bar. **Never add sid
 
 ```html
 <route path="{app-name}">
-	<application name="@roambee/client-{app-name}" loader="hexaLoader"></application>
+	<application name="@decklar/client-{app-name}" loader="hexaLoader"></application>
 </route>
 ```
 
@@ -30,8 +30,8 @@ Only applies to old apps (`integrationhub`, `container`) that were built before 
 ```html
 <!-- LEGACY ONLY - DO NOT USE FOR NEW APPS -->
 <route path="{app-name}">
-	<application name="@roambee/client-sidenav"></application>
-	<application name="@roambee/client-{app-name}" loader="hexaLoader"></application>
+	<application name="@decklar/client-sidenav"></application>
+	<application name="@decklar/client-{app-name}" loader="hexaLoader"></application>
 </route>
 ```
 
@@ -46,11 +46,11 @@ Add the route before the `<route default>` element:
 
 		<!-- ADD NEW ROUTE HERE -->
 		<route path="{app-name}">
-			<application name="@roambee/client-{app-name}" loader="hexaLoader"></application>
+			<application name="@decklar/client-{app-name}" loader="hexaLoader"></application>
 		</route>
 
 		<route default>
-			<application name="@roambee/client-landing" loader="hexaLoader"></application>
+			<application name="@decklar/client-landing" loader="hexaLoader"></application>
 		</route>
 	</main>
 </single-spa-router>
@@ -67,13 +67,13 @@ In `packages/client/root/webpack.config.js`, add the URL variable and import map
 Add after the existing URL declarations (around line 20-30):
 
 ```javascript
-const {appName}Url = process.env.CLIENT_{APP_NAME_UPPER}_URL || (isLocal ? 'http://localhost:{PORT}' : 'https://{app-name}.hive.roambee.com');
+const {appName}Url = process.env.CLIENT_{APP_NAME_UPPER}_URL || (isLocal ? 'http://localhost:{PORT}' : 'https://{app-name}.hive.decklar.com');
 ```
 
 **Example:**
 
 ```javascript
-const myAppUrl = process.env.CLIENT_MY_APP_URL || (isLocal ? 'http://localhost:3022' : 'https://my-app.hive.roambee.com');
+const myAppUrl = process.env.CLIENT_MY_APP_URL || (isLocal ? 'http://localhost:3022' : 'https://my-app.hive.decklar.com');
 ```
 
 ### Step 2: Add Import Map Entry
@@ -84,7 +84,7 @@ Add to the `imports` object:
 const imports = {
 	imports: {
 		// Existing imports...
-		'@roambee/client-{app-name}': `${appNameUrl}/roambee-client-{app-name}.js`
+		'@decklar/client-{app-name}': `${appNameUrl}/decklar-client-{app-name}.js`
 	}
 };
 ```
@@ -92,7 +92,7 @@ const imports = {
 **Example:**
 
 ```javascript
-'@roambee/client-my-app': `${myAppUrl}/roambee-client-my-app.js`,
+'@decklar/client-my-app': `${myAppUrl}/decklar-client-my-app.js`,
 ```
 
 ---

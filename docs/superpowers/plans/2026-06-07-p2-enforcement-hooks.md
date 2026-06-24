@@ -1,4 +1,4 @@
-# Roambee Claude Plugin — P2: Enforcement Hooks
+# Decklar Claude Plugin — P2: Enforcement Hooks
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task.
 
@@ -10,7 +10,7 @@
 
 **Prerequisite:** P1 complete — `docs/hooks-settings-patch.json` placeholder exists.
 
-**Design spec reference:** Hooks section of `2026-06-06-roambee-claude-standards-plugin-design.md`
+**Design spec reference:** Hooks section of `2026-06-06-decklar-claude-standards-plugin-design.md`
 
 ---
 
@@ -20,9 +20,9 @@
 |--------|------|----------------|
 | Modify | `docs/hooks-settings-patch.json` | All 16 hook definitions |
 | Create | `hooks/` | Individual hook scripts (sourced by settings.json) |
-| Create | `hooks/lib.sh` | Shared utilities (read roambee-config, git root, etc.) |
+| Create | `hooks/lib.sh` | Shared utilities (read decklar-config, git root, etc.) |
 
-Hook scripts live in `~/roambee-claude/hooks/` and are called with absolute paths in `hooks-settings-patch.json`.
+Hook scripts live in `~/decklar-claude/hooks/` and are called with absolute paths in `hooks-settings-patch.json`.
 
 ---
 
@@ -35,17 +35,17 @@ Hook scripts live in `~/roambee-claude/hooks/` and are called with absolute path
 
 ```bash
 #!/usr/bin/env bash
-# Shared utilities for roambee-claude hooks
+# Shared utilities for decklar-claude hooks
 
-PLUGIN_DIR="$HOME/roambee-claude"
-CONFIG_FILE="$HOME/.claude/roambee-config.json"
+PLUGIN_DIR="$HOME/decklar-claude"
+CONFIG_FILE="$HOME/.claude/decklar-config.json"
 
 # Get git repo root or empty string if not in a git repo
 git_root() {
   git rev-parse --show-toplevel 2>/dev/null || echo ""
 }
 
-# Read a value from roambee-config.json
+# Read a value from decklar-config.json
 # Usage: config_get "jira" "projectKey"
 config_get() {
   python3 -c "
@@ -91,15 +91,15 @@ git commit -m "feat: add hook shared library"
 # Hook 0: Plugin update notifier — fires on first tool call of session
 # Uses a session flag file to run only once per session
 
-SESSION_FLAG="/tmp/roambee-hook0-$$-checked"
+SESSION_FLAG="/tmp/decklar-hook0-$$-checked"
 [ -f "$SESSION_FLAG" ] && exit 0
 touch "$SESSION_FLAG"
 
-BEHIND=$(git -C "$HOME/roambee-claude" fetch --quiet 2>/dev/null && \
-         git -C "$HOME/roambee-claude" rev-list HEAD..origin/main --count 2>/dev/null || echo "0")
+BEHIND=$(git -C "$HOME/decklar-claude" fetch --quiet 2>/dev/null && \
+         git -C "$HOME/decklar-claude" rev-list HEAD..origin/main --count 2>/dev/null || echo "0")
 
 if [ "${BEHIND:-0}" -gt 0 ]; then
-  echo "⚠️  roambee-claude plugin has $BEHIND new commit(s). Run \`git pull\` in ~/roambee-claude/ or run /doctor to apply updates."
+  echo "⚠️  decklar-claude plugin has $BEHIND new commit(s). Run \`git pull\` in ~/decklar-claude/ or run /doctor to apply updates."
 fi
 exit 0
 ```
@@ -111,7 +111,7 @@ exit 0
 # Hook 1: Architecture check — hard block if architecture.md missing
 # Runs on first Write/Edit per session in a git repo
 
-SESSION_FLAG="/tmp/roambee-hook1-$$-checked"
+SESSION_FLAG="/tmp/decklar-hook1-$$-checked"
 [ -f "$SESSION_FLAG" ] && exit 0
 
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
@@ -131,13 +131,13 @@ exit 0
 
 - [ ] **Step 3: `hooks/hook-02-path-aware-skill.sh`**
 
-The file path being written is passed as `$ROAMBEE_FILE_PATH` env var (set by the hook matcher).
+The file path being written is passed as `$DECKLAR_FILE_PATH` env var (set by the hook matcher).
 
 ```bash
 #!/usr/bin/env bash
 # Hook 2: Path-aware skill reminder — context injection based on file path
 
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 
 case "$FILE_PATH" in
   */src/components/*)
@@ -231,7 +231,7 @@ exit 0
 #!/usr/bin/env bash
 # Hook 5: Migration safety — hard block on destructive operations
 
-COMMAND="${ROAMBEE_BASH_COMMAND:-}"
+COMMAND="${DECKLAR_BASH_COMMAND:-}"
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 
 # Find the migration file most recently modified (likely the one being run)
@@ -252,14 +252,14 @@ exit 0
 
 - [ ] **Step 3: `hooks/hook-06-secret-scan.sh`**
 
-The content being written is passed via stdin or `$ROAMBEE_FILE_CONTENT` env var.
+The content being written is passed via stdin or `$DECKLAR_FILE_CONTENT` env var.
 
 ```bash
 #!/usr/bin/env bash
 # Hook 6: Secret scan
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 MATCHES=()
 
 # AWS Access Key
@@ -325,7 +325,7 @@ exit 0
 #!/usr/bin/env bash
 # Hook 8: Prompt-as-code reminder
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 
 # Check for string literals > 300 chars (rough proxy for embedded prompts)
 if echo "$CONTENT" | python3 -c "
@@ -390,7 +390,7 @@ git commit -m "feat: add hooks 7-10 (dependency, prompt-as-code, AI observabilit
 #!/usr/bin/env bash
 # Hook 11: PII field detector
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 
 PII_FIELDS="email|phone|mobile|address|location|fullName|firstName|lastName|dateOfBirth|dob|ssn|nationalId|passportNumber|full_name|first_name|last_name|date_of_birth|national_id|passport_number"
 
@@ -411,8 +411,8 @@ exit 0
 #!/usr/bin/env bash
 # Hook 12: Cross-package MFE import guard
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 
 # Only applies inside packages/client/
 echo "$FILE_PATH" | grep -q "packages/client/" || exit 0
@@ -420,12 +420,12 @@ echo "$FILE_PATH" | grep -q "packages/client/" || exit 0
 CURRENT_PKG=$(echo "$FILE_PATH" | sed 's|.*/packages/client/\([^/]*\)/.*|\1|')
 
 # Detect imports from other packages/client/* packages
-BAD_IMPORT=$(echo "$CONTENT" | grep -E "from ['\"](@roambee/|../../)[^'\"]*['\"]" | \
+BAD_IMPORT=$(echo "$CONTENT" | grep -E "from ['\"](@decklar/|../../)[^'\"]*['\"]" | \
   python3 -c "
 import sys, re
 current = '$CURRENT_PKG'
 for line in sys.stdin:
-    m = re.search(r\"from ['\\\"](@roambee/|../../)([^'\\\"]*)\", line)
+    m = re.search(r\"from ['\\\"](@decklar/|../../)([^'\\\"]*)\", line)
     if m:
         target = m.group(2)
         # Skip allowed packages
@@ -450,7 +450,7 @@ exit 0
 #!/usr/bin/env bash
 # Hook 13: Environment variable governance
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 ENV_EXAMPLE="$REPO_ROOT/.env.example"
 
@@ -485,7 +485,7 @@ exit 0
 #!/usr/bin/env bash
 # Hook 14: Swagger/OpenAPI enforcement
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 
 # Check for new HTTP method decorators
 HAS_ENDPOINT=$(echo "$CONTENT" | grep -cE '@(Get|Post|Put|Patch|Delete)\(')
@@ -510,7 +510,7 @@ exit 0
 #!/usr/bin/env bash
 # Hook 15: Subagent doc update reminder (PostToolUse — fires after Write/Edit)
 
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 
 # Check if the file is architecture-impacting
 IMPACTING=$(echo "$FILE_PATH" | grep -E '(controllers?|services?|modules?|routers?)/[^/]+\.(ts|py)$|main\.(ts|py)$|App\.tsx$|package\.json$|pyproject\.toml$')
@@ -543,84 +543,84 @@ git commit -m "feat: add hooks 11-15 (PII, cross-MFE, env vars, Swagger, doc upd
 
 ```json
 {
-  "_comment": "Merged into ~/.claude/settings.json by /init. Each hook references an absolute path to the script in ~/roambee-claude/hooks/.",
+  "_comment": "Merged into ~/.claude/settings.json by /init. Each hook references an absolute path to the script in ~/decklar-claude/hooks/.",
   "PreToolUse": [
     {
       "matcher": ".*",
-      "command": "~/roambee-claude/hooks/hook-00-plugin-update.sh"
+      "command": "~/decklar-claude/hooks/hook-00-plugin-update.sh"
     },
     {
       "matcher": "Write|Edit",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ~/roambee-claude/hooks/hook-01-architecture-check.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" ~/decklar-claude/hooks/hook-01-architecture-check.sh"
     },
     {
       "matcher": "Write|Edit",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ~/roambee-claude/hooks/hook-02-path-aware-skill.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" ~/decklar-claude/hooks/hook-02-path-aware-skill.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "(\\.github/workflows/|Jenkinsfile)",
-      "command": "~/roambee-claude/hooks/hook-03-ci-warning.sh"
+      "command": "~/decklar-claude/hooks/hook-03-ci-warning.sh"
     },
     {
       "matcher": "Bash",
       "inputFilter": "git commit",
-      "command": "~/roambee-claude/hooks/hook-04-precommit-gate.sh"
+      "command": "~/decklar-claude/hooks/hook-04-precommit-gate.sh"
     },
     {
       "matcher": "Bash",
       "inputFilter": "(migration:run|migration:up|dev:migration)",
-      "command": "~/roambee-claude/hooks/hook-05-migration-safety.sh"
+      "command": "~/decklar-claude/hooks/hook-05-migration-safety.sh"
     },
     {
       "matcher": "Write|Edit",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/roambee-claude/hooks/hook-06-secret-scan.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" DECKLAR_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/decklar-claude/hooks/hook-06-secret-scan.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "(package\\.json|pyproject\\.toml)",
-      "command": "~/roambee-claude/hooks/hook-07-dependency-governance.sh"
+      "command": "~/decklar-claude/hooks/hook-07-dependency-governance.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "\\.(py|ts)$",
-      "command": "ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/roambee-claude/hooks/hook-08-prompt-as-code.sh"
+      "command": "DECKLAR_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/decklar-claude/hooks/hook-08-prompt-as-code.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "packages/ai/",
-      "command": "~/roambee-claude/hooks/hook-09-ai-observability.sh"
+      "command": "~/decklar-claude/hooks/hook-09-ai-observability.sh"
     },
     {
       "matcher": "Bash",
       "inputFilter": "(prod|staging|rds\\.amazonaws|postgres://[^l])",
-      "command": "~/roambee-claude/hooks/hook-10-environment-guard.sh"
+      "command": "~/decklar-claude/hooks/hook-10-environment-guard.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "\\.(ts|tsx|py)$",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/roambee-claude/hooks/hook-11-pii-detector.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" DECKLAR_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/decklar-claude/hooks/hook-11-pii-detector.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "packages/client/.*\\.(ts|tsx)$",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/roambee-claude/hooks/hook-12-cross-mfe-import.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" DECKLAR_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/decklar-claude/hooks/hook-12-cross-mfe-import.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "\\.(ts|tsx|py)$",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/roambee-claude/hooks/hook-13-env-var-governance.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" DECKLAR_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/decklar-claude/hooks/hook-13-env-var-governance.sh"
     },
     {
       "matcher": "Write|Edit",
       "inputFilter": "\\.controller\\.ts$",
-      "command": "ROAMBEE_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/roambee-claude/hooks/hook-14-swagger-enforcement.sh"
+      "command": "DECKLAR_FILE_CONTENT=\"$CLAUDE_FILE_CONTENT\" ~/decklar-claude/hooks/hook-14-swagger-enforcement.sh"
     }
   ],
   "PostToolUse": [
     {
       "matcher": "Write|Edit",
-      "command": "ROAMBEE_FILE_PATH=\"$CLAUDE_FILE_PATH\" ~/roambee-claude/hooks/hook-15-subagent-doc-update.sh"
+      "command": "DECKLAR_FILE_PATH=\"$CLAUDE_FILE_PATH\" ~/decklar-claude/hooks/hook-15-subagent-doc-update.sh"
     }
   ]
 }

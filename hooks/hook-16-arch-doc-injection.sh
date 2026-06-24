@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Hook 16: Architecture doc injection — fires once per module per session.
 # On first edit in a module, surfaces the path to its architecture overview.
-source "$HOME/roambee-claude/hooks/lib.sh"
+source "$HOME/decklar-claude/hooks/lib.sh"
 
-FILEPATH="${ROAMBEE_FILE_PATH:-}"
+FILEPATH="${DECKLAR_FILE_PATH:-}"
 [ -z "$FILEPATH" ] && exit "$ALLOW"
 
 GIT_ROOT=$(git_root 2>/dev/null) || exit "$ALLOW"
@@ -23,11 +23,11 @@ told_this_session "hook-16-$MODULE" && exit "$ALLOW"
 OVERVIEW="$MODULE_ARCH/overview.md"
 if [ -f "$OVERVIEW" ]; then
   REL_PATH=$(echo "$OVERVIEW" | sed "s|$GIT_ROOT/||")
-  echo "[roambee] Module '$MODULE' → $REL_PATH — read before making structural changes."
+  echo "[decklar] Module '$MODULE' → $REL_PATH — read before making structural changes."
 else
   # No overview yet — just name the module dir
   REL_DIR=$(echo "$MODULE_ARCH" | sed "s|$GIT_ROOT/||")
-  echo "[roambee] Module '$MODULE' has architecture docs in $REL_DIR — read before making structural changes."
+  echo "[decklar] Module '$MODULE' has architecture docs in $REL_DIR — read before making structural changes."
 fi
 
 mark_told "hook-16-$MODULE"

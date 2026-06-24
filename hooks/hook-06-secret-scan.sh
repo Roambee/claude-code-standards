@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Hook 6: Secret scan
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
-FILE_PATH="${ROAMBEE_FILE_PATH:-}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
+FILE_PATH="${DECKLAR_FILE_PATH:-}"
 MATCHES=()
 
 # AWS Access Key

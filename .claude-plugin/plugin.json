@@ -1,9 +1,9 @@
 {
-  "name": "roambee-claude",
+  "name": "decklar-claude",
   "version": "1.0.0",
-  "description": "Roambee company-wide Claude Code standards and workflow enforcement plugin",
+  "description": "Decklar company-wide Claude Code standards and workflow enforcement plugin",
   "author": {
-    "name": "Roambee Engineering"
+    "name": "Decklar Engineering"
   },
   "dependencies": {
     "plugins": [

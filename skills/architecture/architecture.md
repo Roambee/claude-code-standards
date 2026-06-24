@@ -146,7 +146,7 @@ See [../../docs/architecture/<module>/overview.md](../../docs/architecture/<modu
 
 ## Standards
 - User-facing errors use `EventEmitter.emit('showSnackbar', ...)` — never `console.error`
-- No imports from other MFE packages except `@roambee/client-utility` and `@roambee/shared`
+- No imports from other MFE packages except `@decklar/client-utility` and `@decklar/shared`
 - State: React Query for server state, local `useState` for UI state only
 
 ## Architecture

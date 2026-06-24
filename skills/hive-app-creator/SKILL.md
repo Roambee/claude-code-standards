@@ -3,7 +3,7 @@ name: hive-app-creator
 description: >
     Guide for creating new apps or modules in the Hive Dashboard (HC20) monorepo.
     Use this skill when the user asks to create a new app, page, module, or feature inside the
-    Hive Dashboard, or wants to add a brand new micro-frontend application to the Roambee platform.
+    Hive Dashboard, or wants to add a brand new micro-frontend application to the Decklar platform.
     Covers two workflows: (1) Adding a new module/page inside HC20 (e.g., a new table page, dashboard,
     or feature), and (2) Creating an entirely new Single-SPA micro-frontend app alongside HC20.
     Triggers on: "create a new app", "add a new page to hive", "new module in hc20", "scaffold an app",
@@ -14,7 +14,7 @@ description: >
 
 # Hive App Creator Skill
 
-Use this skill to scaffold new apps or modules in the Roambee Hive Dashboard monorepo.
+Use this skill to scaffold new apps or modules in the Decklar Hive Dashboard monorepo.
 
 ## STEP 0 — Gather ALL Inputs Before Doing Anything Else
 
@@ -58,7 +58,7 @@ This monorepo uses **Single-SPA** micro-frontends:
 | UI Library (USE THIS)                | `@decklar/ui-library` (npm)   | DataTable, Form, Toast, all UI components |
 | Styleguide (DEPRECATED — DO NOT USE) | `packages/client/styleguide/` | Legacy — do not import in new code        |
 
-**Naming convention**: `@roambee/client-<name>` — packages at `packages/client/<name>/`.
+**Naming convention**: `@decklar/client-<name>` — packages at `packages/client/<name>/`.
 
 ---
 
@@ -67,9 +67,9 @@ This monorepo uses **Single-SPA** micro-frontends:
 All new apps, modules, pages, and components **MUST** import UI components exclusively from `@decklar/ui-library`.
 
 -   **DO**: `import { DataTable, Button, Toast } from '@decklar/ui-library';`
--   **DO NOT**: `import { DataTable, Loader, SubHeader } from '@roambee/client-styleguide';` ← NEVER use this in new code.
+-   **DO NOT**: `import { DataTable, Loader, SubHeader } from '@decklar/client-styleguide';` ← NEVER use this in new code.
 
-`@roambee/client-styleguide` is **legacy/deprecated**. It must NOT be used when creating anything new.
+`@decklar/client-styleguide` is **legacy/deprecated**. It must NOT be used when creating anything new.
 See the **ui-library-usage** skill for the full component catalog, import patterns, and composition recipes.
 
 ---
@@ -98,9 +98,9 @@ Use the template from [assets/hc20-module-template.tsx](assets/hc20-module-templ
 Key patterns:
 
 -   Use lazy loading via `React.lazy()`
--   All UI component imports come from `@decklar/ui-library` (NOT `@roambee/client-styleguide`)
--   Imports from `@roambee/client-utility` use `// @ts-ignore`
--   API calls use `API(method, path)` from `@roambee/client-utility`
+-   All UI component imports come from `@decklar/ui-library` (NOT `@decklar/client-styleguide`)
+-   Imports from `@decklar/client-utility` use `// @ts-ignore`
+-   API calls use `API(method, path)` from `@decklar/client-utility`
 -   Notifications use `EventEmitter.emit('showSnackbar', {...})`
 -   **Every page MUST include `Breadcrumbs`** — import `Breadcrumbs` and `BreadcrumbItem` from `@decklar/ui-library`. Place `<Breadcrumbs items={...} />` at the top of every page. Use `onClick` with `useNavigate()` for SPA navigation. The last breadcrumb item (current page) has no `onClick`/`href`.
 
@@ -204,8 +204,8 @@ Use when creating an entirely new top-level application (separate from HC20), li
 
 ```
 packageName   = kebab-case(appName)                   // e.g., "fleet-ops"
-fullName      = "@roambee/client-" + packageName       // e.g., "@roambee/client-fleet-ops"
-bundleName    = "roambee-client-" + packageName + ".js"
+fullName      = "@decklar/client-" + packageName       // e.g., "@decklar/client-fleet-ops"
+bundleName    = "decklar-client-" + packageName + ".js"
 port          = next available (check existing: 3010-3021)
 routePrefix   = "/" + packageName                      // e.g., "/fleet-ops"
 ```
@@ -228,7 +228,7 @@ packages/client/<packageName>/
 ├── babel.config.json
 ├── jest.config.js
 └── src/
-    ├── roambee-client-<packageName>.tsx    # Single-SPA entry
+    ├── decklar-client-<packageName>.tsx    # Single-SPA entry
     ├── root.component.tsx                  # Root wrapper
     ├── App.tsx                             # Main app component
     ├── App.scss                            # Styles
@@ -246,7 +246,7 @@ Edit `packages/client/root/src/microfrontend-layout.html` — add route:
 
 ```html
 <route path="<packageName>">
-	<application name="@roambee/client-sidenav"></application>
+	<application name="@decklar/client-sidenav"></application>
 	<application name="<fullName>" loader="hexaLoader"></application>
 </route>
 ```
@@ -258,7 +258,7 @@ Edit `packages/client/root/webpack.config.js` — add URL variable and import:
 ```javascript
 // Add URL variable (after existing ones)
 const <camelCase>Url = process.env.CLIENT_<UPPER_SNAKE>_URL
-    || (isLocal ? 'http://localhost:<port>' : 'https://<packageName>.hive.roambee.com');
+    || (isLocal ? 'http://localhost:<port>' : 'https://<packageName>.hive.decklar.com');
 
 // Add to imports object
 '<fullName>': `${<camelCase>Url}/${bundleName}`,
@@ -392,7 +392,7 @@ Module not found: Error: Can't resolve 'sass-loader'
 ```
 ERROR
 asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
-  roambee-client-<app-name>.js (800+ KiB)
+  decklar-client-<app-name>.js (800+ KiB)
 ERROR
 entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB).
 ```
@@ -471,7 +471,7 @@ When a **Single-SPA microfrontend** uses `@decklar/ui-library`, a CSS cascade co
 | System | CSS Behavior |
 | --- | --- |
 | `@decklar/ui-library` | Uses Tailwind v4 — all styles wrapped in `@layer` |
-| `@roambee/client-styleguide` (GlobalSearch) | Injects element resets via `createGlobalStyle` — **unlayered** |
+| `@decklar/client-styleguide` (GlobalSearch) | Injects element resets via `createGlobalStyle` — **unlayered** |
 
 In the CSS cascade, **unlayered styles always beat `@layer`-ed styles**, regardless of specificity. So GlobalSearch's `button { background: transparent }` overrides Tailwind's `.rb-button` class completely.
 
@@ -492,7 +492,7 @@ style-loader → css-loader → postcss-loader (with postcss-remove-layer)
 
 ### Additional CSS Fixes When Using GlobalSearch
 
-If the app also renders `<GlobalSearch>` from `@roambee/client-styleguide`:
+If the app also renders `<GlobalSearch>` from `@decklar/client-styleguide`:
 
 - Pass `skipGlobalStyle` prop — prevents aggressive element resets (`button`, `a`, `h1`–`h6`, `body`) from being injected
 - Add `box-sizing: border-box` reset and `margin: 0` in `App.scss` to compensate for the skipped normalize
@@ -523,10 +523,10 @@ import { DataTable, Button, Input, Select, Toast } from '@decklar/ui-library';
 import '@decklar/ui-library/styles'; // once at app root
 
 // @ts-ignore — required for cross-microfrontend imports
-import { API, useAuthUser, setRoutes, EventEmitter, getAuthUser, generateQueryParams } from '@roambee/client-utility';
+import { API, useAuthUser, setRoutes, EventEmitter, getAuthUser, generateQueryParams } from '@decklar/client-utility';
 ```
 
-> **NEVER** import from `@roambee/client-styleguide` in new code. It is deprecated.
+> **NEVER** import from `@decklar/client-styleguide` in new code. It is deprecated.
 
 ## Port Allocation (current)
 

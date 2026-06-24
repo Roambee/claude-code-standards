@@ -46,7 +46,7 @@ Ask the user:
 
 Wait for answer. Do not assume.
 
-Read `~/.claude/roambee-config.json` for `jira.projectKey` and `jira.domain`.
+Read `~/.claude/decklar-config.json` for `jira.projectKey` and `jira.domain`.
 
 **If Large (Story + Tasks):**
 1. Call `mcp__claude_ai_Atlassian__createJiraIssue` — type: Story, summary: [feature name]

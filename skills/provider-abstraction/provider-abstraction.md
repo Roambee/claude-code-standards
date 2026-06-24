@@ -10,11 +10,11 @@ Use when writing any LLM integration code. Read fully before writing a single li
 
 No direct Anthropic SDK (`anthropic`) or OpenAI SDK (`openai`) calls in production services. The only exception is Claude Code tooling itself (skills, hooks — not application services).
 
-Check `~/.claude/roambee-config.json` for `openrouter.baseUrl` and `openrouter.keyEnvVar`. If missing, check the monorepo root `.env.example`. If still not found, ask the user:
+Check `~/.claude/decklar-config.json` for `openrouter.baseUrl` and `openrouter.keyEnvVar`. If missing, check the monorepo root `.env.example`. If still not found, ask the user:
 - "What is your OpenRouter base URL?"
 - "What environment variable holds the API key? (e.g. OPENROUTER_API_KEY)"
 
-Save the answers to `~/.claude/roambee-config.json`.
+Save the answers to `~/.claude/decklar-config.json`.
 
 ---
 

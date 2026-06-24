@@ -82,4 +82,4 @@ If nothing relevant was found, say: "No matches for '<query>'. This might not ha
 - `/recall heet` — finds everything from Heet's sessions
 - `/recall bug-fix auth` — finds auth bug fixes across all sessions
 
-> **Note for when graphify/hindsight is ready:** Replace Steps 2–4 with a GET to the graphify search API. Update `memory.backend` and `memory.endpoint` in `~/.claude/roambee-config.json`.
+> **Note for when graphify/hindsight is ready:** Replace Steps 2–4 with a GET to the graphify search API. Update `memory.backend` and `memory.endpoint` in `~/.claude/decklar-config.json`.

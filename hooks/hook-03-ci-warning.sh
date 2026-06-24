@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 3: CI file warning — fires once per session
 
-source "$HOME/roambee-claude/hooks/lib.sh"
+source "$HOME/decklar-claude/hooks/lib.sh"
 
 told_this_session "hook-03-ci-warning" && exit 0
 

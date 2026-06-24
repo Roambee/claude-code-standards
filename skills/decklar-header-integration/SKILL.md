@@ -1,6 +1,6 @@
 ---
 name: decklar-header-integration
-description: 'Use when adding, modifying, or wiring up the app header (GlobalSearchHeader) in any Decklar microfrontend. Covers the useGlobalSearchHeader hook from @roambee/client-utility, GlobalSearchHeader component from @decklar/ui-library, account switcher, app switcher, profile menu, logout, and navigation. Also use when migrating an app from the old GlobalSearch header to the new one.'
+description: 'Use when adding, modifying, or wiring up the app header (GlobalSearchHeader) in any Decklar microfrontend. Covers the useGlobalSearchHeader hook from @decklar/client-utility, GlobalSearchHeader component from @decklar/ui-library, account switcher, app switcher, profile menu, logout, and navigation. Also use when migrating an app from the old GlobalSearch header to the new one.'
 ---
 
 # Decklar Header Integration
@@ -11,12 +11,12 @@ How to add the new **GlobalSearchHeader** to any Decklar microfrontend app.
 
 ```
 @decklar/ui-library       →  GlobalSearchHeader  (presentational component)
-@roambee/client-utility   →  useGlobalSearchHeader  (data/logic hook)
+@decklar/client-utility   →  useGlobalSearchHeader  (data/logic hook)
 Your App                  →  wires hook output to component props
 ```
 
 -   **`GlobalSearchHeader`** — from `@decklar/ui-library`. Renders the full header shell (logo, search, notifications, account switcher, app switcher, profile menu).
--   **`useGlobalSearchHeader`** — from `@roambee/client-utility` (`packages/client/utility/src/hook/useGlobalSearchHeader.tsx`). Bridge hook that fetches accounts, apps, custom AI apps, and builds all props for the header component.
+-   **`useGlobalSearchHeader`** — from `@decklar/client-utility` (`packages/client/utility/src/hook/useGlobalSearchHeader.tsx`). Bridge hook that fetches accounts, apps, custom AI apps, and builds all props for the header component.
 
 ## Required Dependencies
 
@@ -25,7 +25,7 @@ Ensure the app's `package.json` has:
 ```json
 {
 	"@decklar/ui-library": "^0.0.1-alpha.5",
-	"@roambee/client-utility": "*"
+	"@decklar/client-utility": "*"
 }
 ```
 
@@ -35,7 +35,7 @@ Ensure the app's `package.json` has:
 
 ```tsx
 import { GlobalSearchHeader, TooltipProvider } from '@decklar/ui-library';
-import { useGlobalSearchHeader } from '@roambee/client-utility';
+import { useGlobalSearchHeader } from '@decklar/client-utility';
 ```
 
 ### 2. Call the Hook
@@ -57,8 +57,8 @@ return (
 		<section id="main-layout">
 			<section id="header">
 				<GlobalSearchHeader
-					logoSrc={RoambeeLogo}
-					logoAlt="Roambee"
+					logoSrc={DecklarLogo}
+					logoAlt="Decklar"
 					logoHref="/"
 					title="YOUR_APP_TITLE"
 					userName={userName}
@@ -99,7 +99,7 @@ if (!authenticated) {
 import { useNavigate } from 'react-router-dom';
 import { GlobalSearchHeader, TooltipProvider } from '@decklar/ui-library';
 import '@decklar/ui-library/styles';
-import { useGlobalSearchHeader } from '@roambee/client-utility';
+import { useGlobalSearchHeader } from '@decklar/client-utility';
 import AppLogo from './assets/logo.svg';
 
 function App(): JSX.Element {
@@ -173,7 +173,7 @@ export default App;
 ## TypeScript Interfaces
 
 ```tsx
-// Available from @roambee/client-utility
+// Available from @decklar/client-utility
 export interface HeaderAccount {
 	id: string;
 	label: string;
@@ -226,13 +226,13 @@ export interface HeaderApp {
 
 ## Migrating from Old GlobalSearch Header
 
-If the app currently uses `GlobalSearch` from `@roambee/client-styleguide`:
+If the app currently uses `GlobalSearch` from `@decklar/client-styleguide`:
 
 1. **Remove** the old imports:
 
     ```tsx
     // ❌ Remove
-    import { GlobalSearch } from '@roambee/client-styleguide';
+    import { GlobalSearch } from '@decklar/client-styleguide';
     ```
 
 2. **Add** new imports (see Step 1 above).
@@ -248,7 +248,7 @@ If the app currently uses `GlobalSearch` from `@roambee/client-styleguide`:
 | File                                                         | Purpose       |
 | ------------------------------------------------------------ | ------------- |
 | `packages/client/utility/src/hook/useGlobalSearchHeader.tsx` | Hook source   |
-| `packages/client/utility/src/roambee-client-utility.tsx`     | Barrel export |
+| `packages/client/utility/src/decklar-client-utility.tsx`     | Barrel export |
 
 ## AI App Codes
 

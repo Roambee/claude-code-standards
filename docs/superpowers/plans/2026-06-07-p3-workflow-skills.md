@@ -1,16 +1,16 @@
-# Roambee Claude Plugin — P3: Workflow Skills
+# Decklar Claude Plugin — P3: Workflow Skills
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task.
 
 **Goal:** Write the five Jira-integrated workflow skills: `/plan`, `/pr`, `/next-ticket`, `/standup`, `/release-notes`.
 
-**Architecture:** Each skill is a markdown file Claude reads and follows. All skills read from `~/.claude/roambee-config.json` for Jira domain and project key. All Jira operations use the Atlassian MCP (`mcp__claude_ai_Atlassian__*` tools).
+**Architecture:** Each skill is a markdown file Claude reads and follows. All skills read from `~/.claude/decklar-config.json` for Jira domain and project key. All Jira operations use the Atlassian MCP (`mcp__claude_ai_Atlassian__*` tools).
 
 **Tech Stack:** Claude Code skill markdown format, Atlassian MCP, GitHub MCP (`gh`), Git bash commands.
 
-**Prerequisite:** P1 complete — `~/.claude/roambee-config.json` schema established, Atlassian MCP authenticated via `/init`.
+**Prerequisite:** P1 complete — `~/.claude/decklar-config.json` schema established, Atlassian MCP authenticated via `/init`.
 
-**Design spec reference:** Skills section of `2026-06-06-roambee-claude-standards-plugin-design.md`
+**Design spec reference:** Skills section of `2026-06-06-decklar-claude-standards-plugin-design.md`
 
 ---
 
@@ -82,7 +82,7 @@ Ask the user:
 
 Wait for answer. Do not assume.
 
-Read `~/.claude/roambee-config.json` for `jira.projectKey` and `jira.domain`.
+Read `~/.claude/decklar-config.json` for `jira.projectKey` and `jira.domain`.
 
 **If Large (Story + Tasks):**
 1. Call `mcp__claude_ai_Atlassian__createJiraIssue` — type: Story, summary: [feature name]
@@ -260,7 +260,7 @@ Pick up your next Jira task and create the branch without touching Jira manually
 
 ## Step 1: Fetch Sprint Tickets
 
-Read `~/.claude/roambee-config.json` for `jira.projectKey`.
+Read `~/.claude/decklar-config.json` for `jira.projectKey`.
 
 Call `mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql`:
 ```
@@ -452,7 +452,7 @@ ORDER BY issuetype ASC, priority DESC
 
 **Product Changelog (plain English — for Confluence or Slack):**
 ```
-🚀 Roambee v2.4.0 is here!
+🚀 Decklar v2.4.0 is here!
 
 ✨ New features:
 • Export shipment data to CSV directly from the dashboard

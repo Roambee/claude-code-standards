@@ -1,4 +1,4 @@
-# Roambee Claude Code Standards Plugin — Design Spec
+# Decklar Claude Code Standards Plugin — Design Spec
 
 **Date:** 2026-06-06  
 **Status:** Draft — in progress  
@@ -8,17 +8,17 @@
 
 ## Overview
 
-A company-wide Claude Code plugin (`roambee-claude`) that enforces consistent development standards across all Roambee engineering teams. Covers app developers (React microfrontends, NestJS backends) and AI developers (FastAPI, LLM integrations, agentic workflows).
+A company-wide Claude Code plugin (`decklar-claude`) that enforces consistent development standards across all Decklar engineering teams. Covers app developers (React microfrontends, NestJS backends) and AI developers (FastAPI, LLM integrations, agentic workflows).
 
-Distributed as a Claude Code plugin via the `.claude-plugin/marketplace.json` + `.claude-plugin/plugin.json` manifest pair at the repo root. Push to a dedicated GitHub org repo (`Roambee/claude-code-standards`) and developers register it with a relative `{ "source": "github", "repo": "Roambee/claude-code-standards" }` marketplace entry — no per-machine path configuration needed.
+Distributed as a Claude Code plugin via the `.claude-plugin/marketplace.json` + `.claude-plugin/plugin.json` manifest pair at the repo root. Push to a dedicated GitHub org repo (`Decklar/claude-code-standards`) and developers register it with a relative `{ "source": "github", "repo": "Decklar/claude-code-standards" }` marketplace entry — no per-machine path configuration needed.
 
 ### Installation (developer onboarding)
 
 ```json
 // ~/.claude/settings.json — add once per developer machine
 "extraKnownMarketplaces": {
-  "roambee": {
-    "source": { "source": "github", "repo": "Roambee/claude-code-standards" }
+  "decklar": {
+    "source": { "source": "github", "repo": "Decklar/claude-code-standards" }
   }
 }
 ```
@@ -30,7 +30,7 @@ Then run `/init` — one command installs everything.
 ## Plugin Structure
 
 ```
-~/roambee-claude/
+~/decklar-claude/
 ├── plugin.json                      # includes dependencies[] for auto-install
 ├── skills/
 │   ├── init/                        # Machine setup
@@ -96,9 +96,9 @@ Then run `/init` — one command installs everything.
 
 ```json
 {
-  "name": "roambee-claude",
+  "name": "decklar-claude",
   "version": "1.0.0",
-  "description": "Roambee company-wide Claude Code standards plugin",
+  "description": "Decklar company-wide Claude Code standards plugin",
   "skills": ["init", "doctor", "new-repo", "plan", "standup", "pr", "next-ticket", "release-notes",
              "decklar-ui-library", "decklar-api-integration", "decklar-app-scaffold",
              "decklar-header-integration", "hive-app-creator",
@@ -126,7 +126,7 @@ Then run `/init` — one command installs everything.
 }
 ```
 
-`/init` reads `dependencies` and installs everything automatically — a developer only needs to install `roambee-claude` itself.
+`/init` reads `dependencies` and installs everything automatically — a developer only needs to install `decklar-claude` itself.
 
 ---
 
@@ -139,11 +139,11 @@ Run once per developer machine. Idempotent — safe to re-run.
 **What it does:**
 1. Authenticates with AWS CodeArtifact so `npm install` can resolve `@decklar/ui-library`:
    ```bash
-   aws codeartifact login --tool npm --domain roambee \
+   aws codeartifact login --tool npm --domain decklar \
      --domain-owner <ACCOUNT_ID> --repository npm-internal
    ```
-   - On first run: prompts the developer for `ACCOUNT_ID`, `region`, and `profile` and saves them to `~/.claude/roambee-config.json`
-   - On subsequent runs: reads from `~/.claude/roambee-config.json` — no re-prompting
+   - On first run: prompts the developer for `ACCOUNT_ID`, `region`, and `profile` and saves them to `~/.claude/decklar-config.json`
+   - On subsequent runs: reads from `~/.claude/decklar-config.json` — no re-prompting
    - Notes that the token expires after 12h and must be refreshed (run `/init` again or `/doctor --fix`)
 
 2. Writes `~/.claude/CLAUDE.md` from `templates/CLAUDE.md`
@@ -154,7 +154,7 @@ Run once per developer machine. Idempotent — safe to re-run.
    - Checks if the plugin is already present in `~/.claude/settings.json`
    - If missing, patches it in automatically (adds the marketplace source)
    - Required plugins: `superpowers`, `feature-dev`, `code-simplifier`, `github`, `claude-mem`, `hookify`, `coderabbit`, `frontend-design`
-   - Developer only needs to install `roambee-claude` — everything else follows automatically
+   - Developer only needs to install `decklar-claude` — everything else follows automatically
 
 5. Installs Playwright and the Playwright MCP server:
    - Runs `npx playwright install --with-deps chromium` if Playwright is not present
@@ -170,8 +170,8 @@ Run once per developer machine. Idempotent — safe to re-run.
 6. Sets up Atlassian MCP authentication:
    - Checks if `mcp__claude_ai_Atlassian` is already authenticated
    - If not, triggers the Atlassian OAuth flow via `mcp__claude_ai_Atlassian__authenticate`
-   - Verifies access to the Roambee Jira project after auth completes
-   - Saves the connected Jira project key (e.g. `RMB`) to `~/.claude/roambee-config.json`
+   - Verifies access to the Decklar Jira project after auth completes
+   - Saves the connected Jira project key (e.g. `RMB`) to `~/.claude/decklar-config.json`
 
 ---
 
@@ -185,8 +185,8 @@ Run at any time to verify the Claude Code setup is healthy.
 - [ ] All hooks are present in `~/.claude/settings.json`
 - [ ] `architecture.md` exists in current repo root
 - [ ] Required plugins are installed
-- [ ] `roambee-claude` plugin is up to date (checks local git vs remote)
-- [ ] Atlassian MCP is authenticated and can reach the Roambee Jira project
+- [ ] `decklar-claude` plugin is up to date (checks local git vs remote)
+- [ ] Atlassian MCP is authenticated and can reach the Decklar Jira project
 
 Reports pass/fail per check. Auto-fixes what it can: refreshes CodeArtifact token, overwrites CLAUDE.md to latest, patches missing hooks. For Atlassian, if unauthenticated, re-triggers the OAuth flow.
 
@@ -316,7 +316,7 @@ Run when implementation is complete and tests pass. Creates a PR, links it to Ji
 
 **What it does:**
 1. Confirms all tests are passing before proceeding — blocks if not
-2. Reads `~/.claude/roambee-config.json` for Jira project key and Atlassian domain
+2. Reads `~/.claude/decklar-config.json` for Jira project key and Atlassian domain
 3. Extracts the Jira ticket ID from the current branch name
 4. Generates a PR body using this template:
    ```
@@ -330,7 +330,7 @@ Run when implementation is complete and tests pass. Creates a PR, links it to Ji
    [How this was tested — unit tests, e2e, Playwright screenshots]
 
    ## Jira
-   [RMB-XXXX](https://roambee.atlassian.net/browse/RMB-XXXX)
+   [RMB-XXXX](https://decklar.atlassian.net/browse/RMB-XXXX)
    ```
 5. Asks the user: "Ready to open PR against `dev`? Reviewers will be [detected from CODEOWNERS for changed packages]. Confirm?"
 6. Creates the PR via GitHub MCP (`gh pr create`) — never opens without confirmation
@@ -411,7 +411,7 @@ Use before writing any `*.test.ts` / `*.spec.ts` file.
 
 **Covers:**
 - **Frontend unit**: Jest + React Testing Library for microfrontend components
-  - How to mock `@roambee/client-utility` cross-MFE imports
+  - How to mock `@decklar/client-utility` cross-MFE imports
   - How to test React Query hooks
   - How to test `EventEmitter`-driven flows
 - **Frontend integration (Playwright)**: Subagents run `npx playwright test` against the locally running dev server. Playwright spins up its own headless Chromium — no mouse takeover, no interference with the developer's browser. Tests navigate to `localhost:<port>`, interact with the UI, capture screenshots, and assert on DOM state.
@@ -508,7 +508,7 @@ Use when writing any LLM integration code.
 
 **Rules:**
 - **Always use OpenRouter as the provider** — no direct Anthropic SDK calls in production services (exception: Claude Code tooling itself)
-- **Before writing any LLM call**: check `~/.claude/roambee-config.json` for saved OpenRouter base URL and key env var name. If not present, check monorepo root `.env` / `.env.example`. If still not found, ask the user.
+- **Before writing any LLM call**: check `~/.claude/decklar-config.json` for saved OpenRouter base URL and key env var name. If not present, check monorepo root `.env` / `.env.example`. If still not found, ask the user.
 - **Before choosing a model**, present this cost reference table and ask the user to pick:
 
 | Model | Best for | Est. cost / 1k calls |
@@ -533,8 +533,8 @@ All hooks are installed by `/init` into `~/.claude/settings.json`.
 
 ### Hook 0 — Plugin Update Notifier (Context Injection)
 - **Trigger**: `PreToolUse` — first tool call of any session
-- **Logic**: Runs `git -C ~/roambee-claude fetch --quiet && git -C ~/roambee-claude rev-list HEAD..origin/main --count` to check if the local plugin is behind remote
-- **On behind**: Outputs "roambee-claude plugin has X new commit(s). Run `git pull` in `~/roambee-claude/` or run `/doctor` to apply updates."
+- **Logic**: Runs `git -C ~/decklar-claude fetch --quiet && git -C ~/decklar-claude rev-list HEAD..origin/main --count` to check if the local plugin is behind remote
+- **On behind**: Outputs "decklar-claude plugin has X new commit(s). Run `git pull` in `~/decklar-claude/` or run `/doctor` to apply updates."
 - **On up to date**: Passes silently. Runs once per session only.
 
 ### Hook 1 — Architecture Check (Hard Block)
@@ -622,9 +622,9 @@ All hooks are installed by `/init` into `~/.claude/settings.json`.
 ### Hook 12 — Cross-Package Import Guard (Hard Block)
 - **Trigger**: `PreToolUse` on `Write` or `Edit` for `.ts` / `.tsx` files inside `packages/client/**`
 - **Logic**: Scans the import statements in the file being written. Detects any import whose path crosses MFE boundaries:
-  - Pattern: `from '../../<other-mfe-package>/src/...'` or `from '@roambee/<other-mfe-package>'` where the source and target are both under `packages/client/` but are different package directories
+  - Pattern: `from '../../<other-mfe-package>/src/...'` or `from '@decklar/<other-mfe-package>'` where the source and target are both under `packages/client/` but are different package directories
 - **On match**: Hard block — "Direct import from another MFE (`{package}`) detected. Cross-MFE communication must go through the shared `EventEmitter` or shared utilities in `packages/shared/`. Direct imports break module federation at runtime."
-- **Exceptions**: Imports from `packages/shared/`, `@decklar/ui-library`, and `@roambee/client-utility` are allowed
+- **Exceptions**: Imports from `packages/shared/`, `@decklar/ui-library`, and `@decklar/client-utility` are allowed
 
 ### Hook 13 — Environment Variable Governance (Hard Block)
 - **Trigger**: `PreToolUse` on `Write` or `Edit` for `.ts`, `.tsx`, `.py` files
@@ -710,13 +710,13 @@ See `.env.example`. Required: [list key vars]
 ## Decisions
 
 ### AWS CodeArtifact (`/init`)
-Cannot be automated — requires asking the user the first time. `/init` prompts for `ACCOUNT_ID`, `region`, and `profile` on first run, saves them to `~/.claude/roambee-config.json`. Subsequent runs (and `/doctor`) read from that file without re-prompting. Token refresh is still manual (12h TTL) but credentials are not re-entered.
+Cannot be automated — requires asking the user the first time. `/init` prompts for `ACCOUNT_ID`, `region`, and `profile` on first run, saves them to `~/.claude/decklar-config.json`. Subsequent runs (and `/doctor`) read from that file without re-prompting. Token refresh is still manual (12h TTL) but credentials are not re-entered.
 
 ### OpenRouter base URL and auth pattern
-Do not hardcode. `/init` checks the monorepo root `.env` / `.env.example` for `OPENROUTER_API_KEY` and base URL. If not found, asks the user during first AI service spec (the `provider-abstraction` skill prompts: "what OpenRouter endpoint and key env var should be used here?"). Answer is saved to `~/.claude/roambee-config.json` for reuse.
+Do not hardcode. `/init` checks the monorepo root `.env` / `.env.example` for `OPENROUTER_API_KEY` and base URL. If not found, asks the user during first AI service spec (the `provider-abstraction` skill prompts: "what OpenRouter endpoint and key env var should be used here?"). Answer is saved to `~/.claude/decklar-config.json` for reuse.
 
 ### `architecture.md` exemption
-Opt-out via a flag file inside the repo: if `.no-architecture-check` exists at the repo root, Hook 1 passes silently. Developer (or repo owner) places this file intentionally in POCs, throwaway scripts, or the `roambee-claude` plugin repo itself.
+Opt-out via a flag file inside the repo: if `.no-architecture-check` exists at the repo root, Hook 1 passes silently. Developer (or repo owner) places this file intentionally in POCs, throwaway scripts, or the `decklar-claude` plugin repo itself.
 
 ### `/doctor` auto-fix
 Should auto-fix what it can: re-run CodeArtifact login (if credentials saved), overwrite `~/.claude/CLAUDE.md` to latest version, patch missing hooks into `settings.json`. For things it cannot fix (missing plugins), report with instructions.
@@ -737,7 +737,7 @@ Install all skills for all developers. No manual track selection. The plugin use
 
 ## Rollout Plan (rough)
 
-1. **Phase 1 — Local (now)**: Build plugin at `~/roambee-claude/`, test on your own machine
+1. **Phase 1 — Local (now)**: Build plugin at `~/decklar-claude/`, test on your own machine
 2. **Phase 2 — Small team**: Share with 2-3 trusted devs, collect feedback, fill open questions
-3. **Phase 3 — GitHub org repo**: Push to `github.com/Roambee/claude-code-standards`, switch each developer's `extraKnownMarketplaces.roambee` entry to `{ "source": "github", "repo": "Roambee/claude-code-standards" }`
+3. **Phase 3 — GitHub org repo**: Push to `github.com/Decklar/claude-code-standards`, switch each developer's `extraKnownMarketplaces.decklar` entry to `{ "source": "github", "repo": "Decklar/claude-code-standards" }`
 4. **Phase 4 — Company rollout**: Update developer onboarding docs, announce, have devs run `/init`

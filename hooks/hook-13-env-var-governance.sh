@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 13: Environment variable governance
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 ENV_EXAMPLE="$REPO_ROOT/.env.example"
 

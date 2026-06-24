@@ -1,6 +1,6 @@
 # /contribute-skill — Submit a Skill to the Shared Plugin
 
-Use when a developer wants to contribute a skill to `Roambee/claude-code-standards` so all engineers get it.
+Use when a developer wants to contribute a skill to `Decklar/claude-code-standards` so all engineers get it.
 
 **Announce at start:** "Loading contribute-skill. Let's get your skill into the shared plugin."
 
@@ -27,7 +27,7 @@ Before opening a PR, verify every item:
 - [ ] **Reusable** — useful across multiple teams, not specific to one service or project
 - [ ] **Concrete steps** — every step has actual commands or code, no placeholders
 - [ ] **Announce at start** — the skill has a confirmation message on load
-- [ ] **Roambee-aware** — references correct tools/paths (`mcp__claude_ai_Atlassian__*`, `~/.claude/roambee-config.json`, `RMB-XXXX`) where relevant
+- [ ] **Decklar-aware** — references correct tools/paths (`mcp__claude_ai_Atlassian__*`, `~/.claude/decklar-config.json`, `RMB-XXXX`) where relevant
 - [ ] **No duplicate** — doesn't replicate an existing skill in the plugin
 
 ```bash
@@ -71,7 +71,7 @@ Then open the PR:
 
 ```bash
 gh pr create \
-  --repo Roambee/claude-code-standards \
+  --repo Decklar/claude-code-standards \
   --base main \
   --head skill/contribute-<name> \
   --title "feat: add <name> skill" \

@@ -130,7 +130,7 @@ qc.invalidateQueries({ queryKey: queryKeys.items.detail(id) }); // one specific 
 ```ts
 // src/api/services/items.service.ts
 // @ts-ignore
-import { API, getAuthUser } from '@roambee/client-utility';
+import { API, getAuthUser } from '@decklar/client-utility';
 import { ENDPOINTS } from '../endpoints';
 import type { Item, CreateItemPayload, UpdateItemPayload } from '@/types/item';
 
@@ -257,7 +257,7 @@ Always invalidate or update the cache in `onSuccess`.
 // src/api/hooks/useItems.ts (continued)
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 // @ts-ignore
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 import { itemsService } from '../services/items.service';
 import { queryKeys } from '../queryKeys';
 

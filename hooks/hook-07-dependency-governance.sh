@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 7: Dependency governance — fires once per session
 
-source "$HOME/roambee-claude/hooks/lib.sh"
+source "$HOME/decklar-claude/hooks/lib.sh"
 
 told_this_session "hook-07-dep-governance" && exit 0
 

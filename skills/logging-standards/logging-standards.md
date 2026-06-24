@@ -38,7 +38,7 @@ export class ShipmentService {
 User-facing errors use `EventEmitter`, not `console.error`.
 
 ```typescript
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 
 // Error notification
 EventEmitter.emit('showSnackbar', {

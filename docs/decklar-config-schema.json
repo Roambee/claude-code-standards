@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "description": "Written by /init to ~/.claude/roambee-config.json. All fields are optional until the feature that needs them is first used.",
+  "description": "Written by /init to ~/.claude/decklar-config.json. All fields are optional until the feature that needs them is first used.",
   "type": "object",
   "properties": {
     "codeartifact": {
@@ -14,7 +14,7 @@
     "jira": {
       "type": "object",
       "properties": {
-        "domain":     { "type": "string", "description": "Atlassian domain, e.g. roambee.atlassian.net" },
+        "domain":     { "type": "string", "description": "Atlassian domain, e.g. decklar.atlassian.net" },
         "projectKey": { "type": "string", "description": "Jira project key, e.g. RMB" }
       }
     },

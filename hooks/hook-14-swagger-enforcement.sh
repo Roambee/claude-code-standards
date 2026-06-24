@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Hook 14: Swagger/OpenAPI enforcement — fires once per controller file per session
 
-source "$HOME/roambee-claude/hooks/lib.sh"
+source "$HOME/decklar-claude/hooks/lib.sh"
 
 # Dedup per file: each controller is warned at most once per session
-FILE_KEY="hook-14-$(echo "${ROAMBEE_FILE_PATH:-unknown}" | tr '/: .' '____')"
+FILE_KEY="hook-14-$(echo "${DECKLAR_FILE_PATH:-unknown}" | tr '/: .' '____')"
 told_this_session "$FILE_KEY" && exit 0
 
-CONTENT="${ROAMBEE_FILE_CONTENT:-$(cat 2>/dev/null)}"
+CONTENT="${DECKLAR_FILE_CONTENT:-$(cat 2>/dev/null)}"
 
 # Check for HTTP method decorators — exit silently if none
 HAS_ENDPOINT=$(echo "$CONTENT" | grep -cE '@(Get|Post|Put|Patch|Delete)\(')

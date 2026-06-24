@@ -10,11 +10,11 @@ Replace placeholders:
 
 > **Note:** For navigation components (header, footer, side navigation), see [navigation-components.md](navigation-components.md)
 
-> **Logo asset:** Copy `Final_Logo_Formerly_Roambee-011.png` from any existing app (e.g., `packages/client/webhook/src/assets/images/`) into `src/assets/images/` of the new app. Do not reference a local `logo.svg` — it doesn't exist.
+> **Logo asset:** Copy `Final_Logo_Formerly_Decklar-011.png` from any existing app (e.g., `packages/client/webhook/src/assets/images/`) into `src/assets/images/` of the new app. Do not reference a local `logo.svg` — it doesn't exist.
 
 ---
 
-## Entry Point: roambee-client-{app-name}.tsx
+## Entry Point: decklar-client-{app-name}.tsx
 
 The single-spa lifecycle entry point.
 
@@ -48,7 +48,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { useEffect } from 'react';
 import App from './App';
 // @ts-ignore
-import { initializeOpenObserve, SERVICES } from '@roambee/client-utility';
+import { initializeOpenObserve, SERVICES } from '@decklar/client-utility';
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -100,13 +100,13 @@ export default function App() {
 > **Choose the correct header template based on the UI stack — see both options below.**
 >
 > -   **New `@decklar/ui-library` apps** → use the **GlobalSearchHeader template** (Pattern A below)
-> -   **Legacy apps using `@roambee/client-styleguide`** → use the **GlobalSearch template** (Pattern B below)
+> -   **Legacy apps using `@decklar/client-styleguide`** → use the **GlobalSearch template** (Pattern B below)
 
 ---
 
 ### Pattern A — New `@decklar/ui-library` App (USE THIS FOR ALL NEW APPS)
 
-Uses `GlobalSearchHeader` from `@decklar/ui-library` + `useGlobalSearchHeader` from `@roambee/client-utility`.  
+Uses `GlobalSearchHeader` from `@decklar/ui-library` + `useGlobalSearchHeader` from `@decklar/client-utility`.  
 No manual account fetching needed — the hook handles everything.
 
 > Full prop reference and hook return values: see the `decklar-header-integration` skill.
@@ -116,11 +116,11 @@ import './App.scss';
 import '@decklar/ui-library/styles';
 import { GlobalSearchHeader, TooltipProvider } from '@decklar/ui-library';
 // @ts-ignore
-import { useGlobalSearchHeader, setRoutes } from '@roambee/client-utility';
+import { useGlobalSearchHeader, setRoutes } from '@decklar/client-utility';
 import { Suspense } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import routes from './routes';
-import AppLogo from './assets/images/Final_Logo_Formerly_Roambee-011.png';
+import AppLogo from './assets/images/Final_Logo_Formerly_Decklar-011.png';
 
 function App(): JSX.Element {
 	const navigate = useNavigate();
@@ -183,7 +183,7 @@ export default App;
 
 ### Pattern B — Legacy/Styleguide App (existing apps only)
 
-Uses `GlobalSearch` from `@roambee/client-styleguide`. Only use for apps already on the old styleguide stack.  
+Uses `GlobalSearch` from `@decklar/client-styleguide`. Only use for apps already on the old styleguide stack.  
 **Do NOT use for new apps.** Always pass `skipGlobalStyle` — without it, GlobalSearch CSS resets override `@decklar/ui-library` Tailwind styles.
 
 ```tsx
@@ -191,9 +191,9 @@ import './App.scss';
 import '@decklar/ui-library/styles';
 
 // @ts-ignore
-import { GlobalSearch } from '@roambee/client-styleguide';
+import { GlobalSearch } from '@decklar/client-styleguide';
 // @ts-ignore
-import { API, useAuthUser, setRoutes, EventEmitter } from '@roambee/client-utility';
+import { API, useAuthUser, setRoutes, EventEmitter } from '@decklar/client-utility';
 import { Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import routes from './routes';

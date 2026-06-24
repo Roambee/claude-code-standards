@@ -1,11 +1,11 @@
-# /init — Roambee Machine Setup
+# /init — Decklar Machine Setup
 
 Run once per developer machine. Idempotent — safe to re-run.
 
-**Announce at start:** "Running /init to set up your Roambee Claude Code environment."
+**Announce at start:** "Running /init to set up your Decklar Claude Code environment."
 
 ```bash
-PLUGIN_DIR="$HOME/roambee-claude"
+PLUGIN_DIR="$HOME/decklar-claude"
 ```
 
 ---
@@ -16,7 +16,7 @@ Check for saved credentials:
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 try:
     d = json.load(open(p))
     ca = d.get('codeartifact', {})
@@ -30,11 +30,11 @@ If `accountId` is empty, ask the developer:
 2. "What AWS region is the CodeArtifact domain in? (e.g. ap-south-1, us-east-1)"
 3. "What AWS CLI profile to use? (press Enter for 'default')"
 
-Save to `~/.claude/roambee-config.json` (merge, don't overwrite):
+Save to `~/.claude/decklar-config.json` (merge, don't overwrite):
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 d = {}
 try: d = json.load(open(p))
 except: pass
@@ -43,7 +43,7 @@ d.setdefault('codeartifact', {}).update({
     'region': '<REGION>',
     'profile': '<PROFILE>'
 })
-d['pluginDir'] = os.path.expanduser('~/roambee-claude')
+d['pluginDir'] = os.path.expanduser('~/decklar-claude')
 os.makedirs(os.path.dirname(p), exist_ok=True)
 json.dump(d, open(p, 'w'), indent=2)
 print('Credentials saved.')
@@ -53,7 +53,7 @@ print('Credentials saved.')
 Authenticate:
 ```bash
 aws codeartifact login --tool npm \
-  --domain roambee \
+  --domain decklar \
   --domain-owner <accountId> \
   --region <region> \
   --profile <profile> \
@@ -164,14 +164,14 @@ Check if Atlassian MCP is authenticated by calling `mcp__claude_ai_Atlassian__at
 2. Wait for the developer to complete authentication in the browser
 3. Call `mcp__claude_ai_Atlassian__complete_authentication`
 4. Call `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` to list available sites
-5. Ask the developer: "Which Jira site? (e.g. roambee.atlassian.net)"
+5. Ask the developer: "Which Jira site? (e.g. decklar.atlassian.net)"
 6. Ask: "What is the Jira project key? (e.g. RMB)"
-7. Save to `~/.claude/roambee-config.json`:
+7. Save to `~/.claude/decklar-config.json`:
 
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 d = {}
 try: d = json.load(open(p))
 except: pass
@@ -187,12 +187,12 @@ print('✅ Jira config saved.')
 
 Ask the developer: **"What's your name for the wiki? (e.g. heet, heet-shah — this is your identity in the shared company knowledge base)"**
 
-Save wiki config to `~/.claude/roambee-config.json`:
+Save wiki config to `~/.claude/decklar-config.json`:
 
 ```bash
 python3 -c "
 import json, os
-p = os.path.expanduser('~/.claude/roambee-config.json')
+p = os.path.expanduser('~/.claude/decklar-config.json')
 d = {}
 try: d = json.load(open(p))
 except: pass
@@ -213,7 +213,7 @@ Auto-export wiki credentials from plugin config into `~/.zshrc` and the current 
 ```bash
 CREDS_FILE="$PLUGIN_DIR/config/wiki-env.sh"
 ZSHRC="$HOME/.zshrc"
-MARKER="# roambee-wiki-env"
+MARKER="# decklar-wiki-env"
 
 if ! grep -q "$MARKER" "$ZSHRC" 2>/dev/null; then
   echo "" >> "$ZSHRC"

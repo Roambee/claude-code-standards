@@ -21,7 +21,7 @@ When the user asks to **create a new app** using this skill, you MUST:
 **Then** tell the user they can choose UI stack:
 
 -   **"Set up shadcn"** or **"Use decklar-shadcn-app"** → Use the `decklar-shadcn-app` skill to automatically init shadcn, apply Decklar theme, and install default components (button, card, dialog, input, table, badge, label, tabs, separator).
--   **"Use styleguide"** or **"Use decklar-component-builder"** → Ensure `@roambee/client-styleguide` is in `package.json`, run install, and use the `decklar-component-builder` skill for building UI with styleguide components.
+-   **"Use styleguide"** or **"Use decklar-component-builder"** → Ensure `@decklar/client-styleguide` is in `package.json`, run install, and use the `decklar-component-builder` skill for building UI with styleguide components.
 
 Do not only give instructions—create the files and run the commands as part of the flow.
 
@@ -39,7 +39,7 @@ The following must be true for **every** scaffolded app — do not skip:
 
 | Requirement                               | Detail                                                                                                                                                                                                                                                                                                                     |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Header**                                | Always include a header in `App.tsx` — choose the correct pattern based on UI stack: **new `@decklar/ui-library` apps** use `GlobalSearchHeader` + `useGlobalSearchHeader` (see `decklar-header-integration` skill); **legacy/styleguide apps** use `GlobalSearch` from `@roambee/client-styleguide`. See source template. |
+| **Header**                                | Always include a header in `App.tsx` — choose the correct pattern based on UI stack: **new `@decklar/ui-library` apps** use `GlobalSearchHeader` + `useGlobalSearchHeader` (see `decklar-header-integration` skill); **legacy/styleguide apps** use `GlobalSearch` from `@decklar/client-styleguide`. See source template. |
 | **`@tanstack/react-query`**               | Always include in `dependencies` — required for API data fetching via React Query hooks. Wrap app in `QueryClientProvider` in `root.component.tsx`.                                                                                                                                                                        |
 | **`zod` + `react-hook-form`**             | Always include in `dependencies` — required for `Form` + `Form*` components from `@decklar/ui-library`.                                                                                                                                                                                                                    |
 | **`sass` + `sass-loader`**                | Always include in `devDependencies` — required for `.scss` imports.                                                                                                                                                                                                                                                        |
@@ -52,8 +52,8 @@ The following must be true for **every** scaffolded app — do not skip:
 | Item       | Pattern                         | Example                     |
 | ---------- | ------------------------------- | --------------------------- |
 | Folder     | `{app-name}`                    | `my-app`                    |
-| Package    | `@roambee/client-{app-name}`    | `@roambee/client-my-app`    |
-| Entry file | `roambee-client-{app-name}.tsx` | `roambee-client-my-app.tsx` |
+| Package    | `@decklar/client-{app-name}`    | `@decklar/client-my-app`    |
+| Entry file | `decklar-client-{app-name}.tsx` | `decklar-client-my-app.tsx` |
 | Port       | Next available (3022+)          | `3022`                      |
 
 ## Required Folder Structure
@@ -70,7 +70,7 @@ packages/client/{app-name}/
 ├── tsconfig.json
 ├── webpack.config.js
 └── src/
-    ├── roambee-client-{app-name}.tsx   # Single-spa entry
+    ├── decklar-client-{app-name}.tsx   # Single-spa entry
     ├── root.component.tsx               # Root component (QueryClientProvider + BrowserRouter)
     ├── App.tsx                          # Main app (header, routes, auth)
     ├── App.scss                         # Global styles
@@ -123,9 +123,9 @@ packages/client/{app-name}/
 -   [ ] `App.scss` includes `box-sizing: border-box` reset and `margin: 0` on `#main-layout`
 -   [ ] Navigation components added (header/footer) if needed
 -   [ ] Header added — `GlobalSearchHeader` + `useGlobalSearchHeader` for new UI library apps; `GlobalSearch` + `skipGlobalStyle` for legacy styleguide apps
--   [ ] Logo asset copied from an existing app (`packages/client/webhook/src/assets/images/Final_Logo_Formerly_Roambee-011.png`) into `src/assets/images/` — import as `.png`, not `.svg`
+-   [ ] Logo asset copied from an existing app (`packages/client/webhook/src/assets/images/Final_Logo_Formerly_Decklar-011.png`) into `src/assets/images/` — import as `.png`, not `.svg`
 -   [ ] Route added to `microfrontend-layout.html` — **standard route ONLY (no sidenav)**
--   [ ] ❌ `@roambee/client-sidenav` NOT included in the route (sidenav is legacy-only; new apps use `GlobalSearchHeader` which renders its own top bar)
+-   [ ] ❌ `@decklar/client-sidenav` NOT included in the route (sidenav is legacy-only; new apps use `GlobalSearchHeader` which renders its own top bar)
 -   [ ] Import map URL added to root `webpack.config.js`
 -   [ ] **Landing page registered** in `packages/client/landing/src/components/Home/index.tsx`:
     -   [ ] Entry added to `STATIC_APP_METADATA`
@@ -171,7 +171,7 @@ Module not found: Error: Can't resolve 'sass-loader'
 ```
 ERROR
 asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
-  roambee-client-<app-name>.js (800+ KiB)
+  decklar-client-<app-name>.js (800+ KiB)
 ERROR
 entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit.
 ```
@@ -231,7 +231,7 @@ npm ERR! notarget No matching version found for @decklar/ui-library@^0.3.0
 
 ## CSS Compatibility: @decklar/ui-library + GlobalSearch Header
 
-When an app uses **both** `@decklar/ui-library` (Tailwind CSS v4) and `GlobalSearch` from `@roambee/client-styleguide`, there are two CSS conflicts that MUST be resolved:
+When an app uses **both** `@decklar/ui-library` (Tailwind CSS v4) and `GlobalSearch` from `@decklar/client-styleguide`, there are two CSS conflicts that MUST be resolved:
 
 ### Problem 1: `@layer` cascade
 

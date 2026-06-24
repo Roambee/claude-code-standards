@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 5: Migration safety — hard block on destructive operations
 
-COMMAND="${ROAMBEE_BASH_COMMAND:-}"
+COMMAND="${DECKLAR_BASH_COMMAND:-}"
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 
 # Find the migration file most recently modified (likely the one being run)

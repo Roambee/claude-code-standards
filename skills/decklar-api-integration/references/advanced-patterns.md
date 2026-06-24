@@ -523,13 +523,13 @@ const buildPayload = (formData: FormData, accountId: string) => {
 
 ## 11 — URL-persisted filter state with `useUrlFilters`
 
-`useUrlFilters` from `@roambee/client-utility` replaces the separate `useResourceFilters.ts` file when filters need to survive page refresh, browser back/forward navigation, and be shareable via URL. It manages the draft/applied split internally and writes committed state to `URLSearchParams`.
+`useUrlFilters` from `@decklar/client-utility` replaces the separate `useResourceFilters.ts` file when filters need to survive page refresh, browser back/forward navigation, and be shareable via URL. It manages the draft/applied split internally and writes committed state to `URLSearchParams`.
 
 ### Import
 
 ```ts
-import { useUrlFilters } from '@roambee/client-utility';
-import type { UrlFiltersConfig } from '@roambee/client-utility';
+import { useUrlFilters } from '@decklar/client-utility';
+import type { UrlFiltersConfig } from '@decklar/client-utility';
 ```
 
 ### Signature
@@ -566,7 +566,7 @@ type UrlFiltersConfig<T> = {
 // src/api/hooks/useResourcePage.ts
 import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useUrlFilters } from '@roambee/client-utility';
+import { useUrlFilters } from '@decklar/client-utility';
 import { useResourceList } from './useResource';
 
 interface ResourceFilters {

@@ -1,4 +1,4 @@
-# Roambee Claude Plugin — P5: AI Standards Skills
+# Decklar Claude Plugin — P5: AI Standards Skills
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task.
 
@@ -8,7 +8,7 @@
 
 **Prerequisite:** P1 complete — plugin directory structure exists.
 
-**Design spec reference:** AI Developer Skills section of `2026-06-06-roambee-claude-standards-plugin-design.md`
+**Design spec reference:** AI Developer Skills section of `2026-06-06-decklar-claude-standards-plugin-design.md`
 
 ---
 
@@ -403,11 +403,11 @@ Use when writing any LLM integration code. Read fully before writing a single li
 
 No direct Anthropic SDK (`anthropic`) or OpenAI SDK (`openai`) calls in production services. The only exception is Claude Code tooling itself (skills, hooks — not application services).
 
-Check `~/.claude/roambee-config.json` for `openrouter.baseUrl` and `openrouter.keyEnvVar`. If missing, check the monorepo root `.env.example`. If still not found, ask the user:
+Check `~/.claude/decklar-config.json` for `openrouter.baseUrl` and `openrouter.keyEnvVar`. If missing, check the monorepo root `.env.example`. If still not found, ask the user:
 - "What is your OpenRouter base URL?"
 - "What environment variable holds the API key? (e.g. OPENROUTER_API_KEY)"
 
-Save the answers to `~/.claude/roambee-config.json`.
+Save the answers to `~/.claude/decklar-config.json`.
 
 ---
 
@@ -594,13 +594,13 @@ At this point all 5 plans are done. Run the full plugin verification:
 # /doctor
 
 # 3. Check total file count
-find ~/roambee-claude/skills -name "*.md" | wc -l
+find ~/decklar-claude/skills -name "*.md" | wc -l
 ```
 
 Expected: 21 skill files (3 setup + 5 workflow + 5 migrated Decklar + 4 app standards + 4 AI standards).
 
 ```bash
-find ~/roambee-claude/hooks -name "*.sh" | wc -l
+find ~/decklar-claude/hooks -name "*.sh" | wc -l
 ```
 
 Expected: 16 hook scripts + 1 lib.sh = 17 files.

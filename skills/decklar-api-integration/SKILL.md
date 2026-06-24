@@ -99,7 +99,7 @@ When creating a new resource integration, copy and adapt from `assets/`:
 -   [ ] Service function created in `src/api/services/<resource>.service.ts` — pure async, no React, no hooks
 -   [ ] Base query/mutation hooks created in `src/api/hooks/use<Resource>.ts` — wire service → React Query, no business logic
 -   [ ] Filter state: choose one approach:
-    -   **URL-persisted (preferred for paginated tables):** call `useUrlFilters<T>(searchParams, setSearchParams, { defaults, keys })` from `@roambee/client-utility` **inside the page hook** — no separate `Filters.ts` file needed
+    -   **URL-persisted (preferred for paginated tables):** call `useUrlFilters<T>(searchParams, setSearchParams, { defaults, keys })` from `@decklar/client-utility` **inside the page hook** — no separate `Filters.ts` file needed
     -   **Local only (simple forms / non-navigable state):** create `src/api/hooks/use<Resource>Filters.ts` with plain `useState` — no queries inside
 -   [ ] Page-level composed hook created in `src/api/hooks/use<Resource>Page.ts` — assembles base hooks + filters + side effects
 -   [ ] GET data fetching uses `useQuery` in `src/api/hooks/` — NOT a raw `useEffect` in any component

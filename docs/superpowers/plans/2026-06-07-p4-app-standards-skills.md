@@ -1,4 +1,4 @@
-# Roambee Claude Plugin — P4: App Standards Skills
+# Decklar Claude Plugin — P4: App Standards Skills
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task.
 
@@ -8,7 +8,7 @@
 
 **Prerequisite:** P1 complete — plugin directory structure exists.
 
-**Design spec reference:** App Developer Skills section of `2026-06-06-roambee-claude-standards-plugin-design.md`
+**Design spec reference:** App Developer Skills section of `2026-06-06-decklar-claude-standards-plugin-design.md`
 
 ---
 
@@ -75,7 +75,7 @@ Expected: 5 ✅
 ```bash
 git add skills/decklar-*/
 git add skills/hive-app-creator/
-git commit -m "feat: migrate 5 Decklar skills into roambee-claude plugin"
+git commit -m "feat: migrate 5 Decklar skills into decklar-claude plugin"
 ```
 
 ---
@@ -102,7 +102,7 @@ Use before writing any `*.test.ts`, `*.spec.ts`, or `test_*.py` file.
 
 **Cross-MFE mock pattern:**
 ```typescript
-jest.mock('@roambee/client-utility', () => ({
+jest.mock('@decklar/client-utility', () => ({
   EventEmitter: {
     emit: jest.fn(),
     on: jest.fn(),
@@ -135,7 +135,7 @@ it('fetches shipments', async () => {
 
 **EventEmitter-driven test pattern:**
 ```typescript
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 
 it('emits showSnackbar on error', () => {
   render(<MyComponent />);
@@ -238,7 +238,7 @@ Dev server must be running first. Screenshots saved to `playwright-report/screen
 After tests pass, upload screenshots as Jira attachments:
 ```bash
 curl -X POST \
-  "https://$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/roambee-config.json')))['jira']['domain'])")/rest/api/3/issue/${TICKET}/attachments" \
+  "https://$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))['jira']['domain'])")/rest/api/3/issue/${TICKET}/attachments" \
   -H "X-Atlassian-Token: no-check" \
   -H "Authorization: Bearer ${JIRA_TOKEN}" \
   -F "file=@playwright-report/screenshots/feature-name.png"
@@ -331,7 +331,7 @@ export class ShipmentService {
 User-facing errors use `EventEmitter`, not `console.error`.
 
 ```typescript
-import { EventEmitter } from '@roambee/client-utility';
+import { EventEmitter } from '@decklar/client-utility';
 
 // Error notification
 EventEmitter.emit('showSnackbar', {
@@ -427,7 +427,7 @@ Use when designing or reviewing a new API endpoint in NestJS.
 Always use `ResponseHandlerService`. Never call `res.json()` directly.
 
 ```typescript
-import { ResponseHandlerService } from '@roambee/platform-utility';
+import { ResponseHandlerService } from '@decklar/platform-utility';
 
 @Get()
 async getShipments(@Query() query: GetShipmentsDto) {

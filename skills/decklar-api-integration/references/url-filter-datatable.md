@@ -8,7 +8,7 @@
 
 | Layer                | Owner                                  | Job                                                                                                                 |
 | -------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `useUrlFilters`      | `@roambee/client-utility`              | Reads/writes filter state to URL search params. Manages draft vs applied split. Never write yourself — just import. |
+| `useUrlFilters`      | `@decklar/client-utility`              | Reads/writes filter state to URL search params. Manages draft vs applied split. Never write yourself — just import. |
 | `useResourcePage.ts` | `src/api/hooks/`                       | Calls `useUrlFilters`, composes it with the base query hook. **One file per table page.**                           |
 | `buildFilterQuery()` | `src/api/services/resource.service.ts` | Converts the applied filter object into an OData/query-string for the API. Pure function.                           |
 
@@ -54,7 +54,7 @@ const FILTER_KEYS: (keyof ResourceFilters)[] = ['search', 'status', 'account', '
 // src/api/hooks/useResourcePage.ts
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useUrlFilters } from '@roambee/client-utility';
+import { useUrlFilters } from '@decklar/client-utility';
 import { useResourceList } from './useResource';
 
 export const useResourcePage = () => {
@@ -125,7 +125,7 @@ export const useResourcePage = () => {
 
 ```ts
 // src/api/services/resource.service.ts
-import { API } from '@roambee/client-utility';
+import { API } from '@decklar/client-utility';
 import { ENDPOINTS } from '../endpoints';
 
 const PAGE_SIZE = 10;

@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Shared utilities for roambee-claude hooks
+# Shared utilities for decklar-claude hooks
 
-PLUGIN_DIR="$HOME/roambee-claude"
-CONFIG_FILE="$HOME/.claude/roambee-config.json"
+PLUGIN_DIR="$HOME/decklar-claude"
+CONFIG_FILE="$HOME/.claude/decklar-config.json"
 
 # Get git repo root or empty string if not in a git repo
 git_root() {
   git rev-parse --show-toplevel 2>/dev/null || echo ""
 }
 
-# Read a value from roambee-config.json
+# Read a value from decklar-config.json
 # Usage: config_get "jira" "projectKey"
 config_get() {
   python3 -c "
@@ -34,17 +34,17 @@ INJECT=0     # Context injection — print message then exit 0 (Claude reads std
 # before outputting and mark_told after. Scoped to: git repo × calendar day.
 # This prevents the same reminder from firing 20 times in one coding session.
 
-_roambee_session_dir() {
+_decklar_session_dir() {
   local repo_id date
   repo_id=$(git rev-parse --show-toplevel 2>/dev/null | cksum | cut -d' ' -f1 2>/dev/null || echo "global")
   date=$(date +%Y%m%d)
-  echo "/tmp/roambee-${repo_id}-${date}"
+  echo "/tmp/decklar-${repo_id}-${date}"
 }
 
 # Returns 0 (true) if this key was already told in this session.
 told_this_session() {
   local dir key
-  dir=$(_roambee_session_dir)
+  dir=$(_decklar_session_dir)
   key=$(echo "$1" | tr '/: .' '____')
   [ -f "${dir}/${key}" ]
 }
@@ -52,7 +52,7 @@ told_this_session() {
 # Marks a key as told for this session.
 mark_told() {
   local dir key
-  dir=$(_roambee_session_dir)
+  dir=$(_decklar_session_dir)
   mkdir -p "$dir" 2>/dev/null
   key=$(echo "$1" | tr '/: .' '____')
   touch "${dir}/${key}"
