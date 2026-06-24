@@ -5,7 +5,27 @@ Verifies the Claude Code environment is correctly set up. Auto-fixes what it can
 **Announce at start:** "Running /doctor to check your Decklar Claude Code setup."
 
 ```bash
-PLUGIN_DIR=$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/decklar-config.json'))).get('pluginDir', os.path.expanduser('~/decklar-claude')))")
+PLUGIN_DIR=$(python3 -c "
+import json, os
+# Prefer saved config path
+try:
+    d = json.load(open(os.path.expanduser('~/.claude/decklar-config.json')))
+    p = d.get('pluginDir', '')
+    if p and os.path.exists(p):
+        print(p); exit()
+except: pass
+# Fall back to installed_plugins.json
+try:
+    data = json.load(open(os.path.expanduser('~/.claude/plugins/installed_plugins.json')))
+    for key, installs in data.get('plugins', {}).items():
+        if 'decklar-claude' in key:
+            p = installs[0].get('installPath', '')
+            if p and os.path.exists(p):
+                print(p); exit()
+except: pass
+print('')
+")
+[ -z "$PLUGIN_DIR" ] && { echo "❌ decklar-claude plugin not found. Run /init first."; exit 1; }
 ```
 
 ---
@@ -90,7 +110,7 @@ import json, os
 settings = json.load(open(os.path.expanduser('~/.claude/settings.json')))
 plugin = json.load(open('$PLUGIN_DIR/.claude-plugin/plugin.json'))
 installed = set(settings.get('plugins', {}).keys())
-required = {p['name'] for p in plugin.get('dependencies', {}).get('plugins', [])}
+required = {p['name'] for p in plugin.get('dependencies', [])}
 missing = required - installed
 if missing:
     print('MISSING: ' + ', '.join(sorted(missing)))
@@ -166,7 +186,7 @@ echo "${BEHIND:-0}"
 ```
 
 - **0**: ✅ Plugin is up to date
-- **>0**: ⚠️ Plugin is N commit(s) behind. Run `git pull` in `~/decklar-claude/` to update, then re-run `/init`.
+- **>0**: ⚠️ Plugin is N commit(s) behind. Run `git pull` in `$PLUGIN_DIR` to update, then re-run `/init`.
 
 ---
 

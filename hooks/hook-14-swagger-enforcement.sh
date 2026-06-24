@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 14: Swagger/OpenAPI enforcement — fires once per controller file per session
 
-source "$HOME/decklar-claude/hooks/lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 # Dedup per file: each controller is warned at most once per session
 FILE_KEY="hook-14-$(echo "${DECKLAR_FILE_PATH:-unknown}" | tr '/: .' '____')"

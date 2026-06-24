@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Shared utilities for decklar-claude hooks
 
-PLUGIN_DIR="$HOME/decklar-claude"
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_FILE="$HOME/.claude/decklar-config.json"
 
 # Get git repo root or empty string if not in a git repo

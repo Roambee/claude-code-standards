@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 3: CI file warning — fires once per session
 
-source "$HOME/decklar-claude/hooks/lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 told_this_session "hook-03-ci-warning" && exit 0
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Hook 17: Wiki capture — digests last assistant turn to decklar-wiki on every Stop.
-source "$HOME/decklar-claude/hooks/lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 ENDPOINT=$(config_get "wiki" "endpoint")
 [ -z "$ENDPOINT" ] && exit "$ALLOW"

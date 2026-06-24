@@ -5,7 +5,20 @@ Run once per developer machine. Idempotent — safe to re-run.
 **Announce at start:** "Running /init to set up your Decklar Claude Code environment."
 
 ```bash
-PLUGIN_DIR="$HOME/decklar-claude"
+PLUGIN_DIR=$(python3 -c "
+import json, os
+try:
+    data = json.load(open(os.path.expanduser('~/.claude/plugins/installed_plugins.json')))
+    for key, installs in data.get('plugins', {}).items():
+        if 'decklar-claude' in key:
+            p = installs[0].get('installPath', '')
+            if p and os.path.exists(p):
+                print(p)
+                exit()
+except: pass
+print('')
+")
+[ -z "$PLUGIN_DIR" ] && { echo "❌ decklar-claude plugin not found in installed_plugins.json. Is the plugin installed?"; exit 1; }
 ```
 
 ---
@@ -43,7 +56,7 @@ d.setdefault('codeartifact', {}).update({
     'region': '<REGION>',
     'profile': '<PROFILE>'
 })
-d['pluginDir'] = os.path.expanduser('~/decklar-claude')
+d['pluginDir'] = '$PLUGIN_DIR'
 os.makedirs(os.path.dirname(p), exist_ok=True)
 json.dump(d, open(p, 'w'), indent=2)
 print('Credentials saved.')
@@ -123,22 +136,13 @@ try: settings = json.load(open(settings_path))
 except: pass
 
 plugin = json.load(open(plugin_path))
-deps = plugin.get('dependencies', {})
+deps = plugin.get('dependencies', [])
 
 settings.setdefault('plugins', {})
-for p in deps.get('plugins', []):
+for p in deps:
     if p['name'] not in settings['plugins']:
         settings['plugins'][p['name']] = {'source': p['source']}
         print(f'  Added plugin: {p[\"name\"]}')
-
-settings.setdefault('mcpServers', {})
-for mcp in deps.get('mcpServers', []):
-    if mcp['name'] not in settings['mcpServers']:
-        settings['mcpServers'][mcp['name']] = {
-            'command': mcp['command'],
-            'args': mcp['args']
-        }
-        print(f'  Added MCP server: {mcp[\"name\"]}')
 
 json.dump(settings, open(settings_path, 'w'), indent=2)
 print('✅ Plugins and MCP servers installed. Restart Claude Code to activate.')

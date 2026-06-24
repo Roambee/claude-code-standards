@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 16: Architecture doc injection — fires once per module per session.
 # On first edit in a module, surfaces the path to its architecture overview.
-source "$HOME/decklar-claude/hooks/lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 FILEPATH="${DECKLAR_FILE_PATH:-}"
 [ -z "$FILEPATH" ] && exit "$ALLOW"

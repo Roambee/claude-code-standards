@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hook 15: Subagent doc update reminder (PostToolUse) — fires once per session
 
-source "$HOME/decklar-claude/hooks/lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 told_this_session "hook-15-doc-update" && exit 0
 
