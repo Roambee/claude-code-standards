@@ -124,6 +124,39 @@ Call `mcp__claude_ai_Atlassian__atlassianUserInfo`.
 
 ---
 
+## Check 9: Wiki Credentials
+
+```bash
+python3 -c "
+import os
+missing = [v for v in ['WIKI_API_KEY', 'WIKI_ACCOUNT_ID'] if not os.environ.get(v)]
+print('MISSING: ' + ' '.join(missing) if missing else 'SET')
+"
+```
+
+- **SET**: ✅ Wiki credentials exported
+- **MISSING**: Auto-fix: append `config/wiki-env.sh` from the plugin to `~/.zshrc` (if not already there), then source it into the current session:
+
+```bash
+CREDS_FILE="$PLUGIN_DIR/config/wiki-env.sh"
+ZSHRC="$HOME/.zshrc"
+MARKER="# roambee-wiki-env"
+
+# Only append if not already present
+if ! grep -q "$MARKER" "$ZSHRC" 2>/dev/null; then
+  echo "" >> "$ZSHRC"
+  echo "$MARKER" >> "$ZSHRC"
+  cat "$CREDS_FILE" >> "$ZSHRC"
+  echo "✅ Wiki credentials added to ~/.zshrc"
+fi
+
+# Export into current session so hooks work without a terminal restart
+source "$CREDS_FILE"
+echo "✅ Wiki credentials active in current session"
+```
+
+---
+
 ## Check 8: Plugin Up to Date
 
 ```bash
@@ -151,6 +184,7 @@ Roambee Claude Code Health Check
 ✅ Required plugins        8/8 installed
 ✅ Playwright              installed
 ✅ Atlassian MCP           authenticated (Heet Shah)
+✅ Wiki credentials        WIKI_API_KEY + WIKI_ACCOUNT_ID set
 ✅ Plugin version          up to date
 ─────────────────────────────────────────
 1 issue found. See above for fix instructions.

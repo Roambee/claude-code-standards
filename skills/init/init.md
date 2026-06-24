@@ -208,23 +208,22 @@ print('Wiki config saved.')
 "
 ```
 
-Verify the required env vars are set:
+Auto-export wiki credentials from plugin config into `~/.zshrc` and the current session:
 
 ```bash
-python3 -c "
-import os
-missing = []
-if not os.environ.get('WIKI_API_KEY'): missing.append('WIKI_API_KEY')
-if not os.environ.get('WIKI_ACCOUNT_ID'): missing.append('WIKI_ACCOUNT_ID')
-if missing:
-    print('MISSING:', ' '.join(missing))
-    print('Add these to your shell profile (~/.zshrc or ~/.bash_profile) and restart your terminal.')
-else:
-    print('ENV OK')
-"
-```
+CREDS_FILE="$PLUGIN_DIR/config/wiki-env.sh"
+ZSHRC="$HOME/.zshrc"
+MARKER="# roambee-wiki-env"
 
-If `MISSING` is printed, tell the developer to add the env vars to their shell profile and re-run `/init`. Do not proceed to world creation until `ENV OK`.
+if ! grep -q "$MARKER" "$ZSHRC" 2>/dev/null; then
+  echo "" >> "$ZSHRC"
+  echo "$MARKER" >> "$ZSHRC"
+  cat "$CREDS_FILE" >> "$ZSHRC"
+fi
+
+source "$CREDS_FILE"
+echo "✅ Wiki credentials exported"
+```
 
 Create the `decklar-wiki` world if it does not exist:
 
