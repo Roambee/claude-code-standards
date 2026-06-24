@@ -53,7 +53,7 @@ print(json.dumps({
     'top_k': 10
 }))
 " <<< "$QUERY")
-curl -s -X POST "$ENDPOINT/v1/recall" \
+curl -s --max-time 20 -X POST "$ENDPOINT/v1/recall" \
   -H "apikey: $API_KEY" \
   -H "x-account-id: $ACCOUNT_ID" \
   -H "Content-Type: application/json" \
@@ -128,7 +128,7 @@ print(json.dumps({
     'top_k': 10
 }))
 " <<< "$QUESTION")
-curl -s -X POST "$ENDPOINT/v1/decide" \
+curl -s --max-time 20 -X POST "$ENDPOINT/v1/decide" \
   -H "apikey: $API_KEY" \
   -H "x-account-id: $ACCOUNT_ID" \
   -H "Content-Type: application/json" \
