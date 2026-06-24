@@ -6,6 +6,7 @@
   "metadata": {
     "description": "Decklar company-wide Claude Code standards and workflow enforcement"
   },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official", "thedotmack", "ponytail"],
   "plugins": [
     {
       "name": "decklar-claude",

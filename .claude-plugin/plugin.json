@@ -6,13 +6,13 @@
     "name": "Decklar Engineering"
   },
   "dependencies": [
-    { "name": "superpowers",     "source": "superpowers@claude-plugins-official" },
-    { "name": "feature-dev",     "source": "feature-dev@claude-plugins-official" },
-    { "name": "code-simplifier", "source": "code-simplifier@claude-plugins-official" },
-    { "name": "claude-mem",      "source": "claude-mem@thedotmack" },
-    { "name": "hookify",         "source": "hookify@claude-plugins-official" },
-    { "name": "coderabbit",      "source": "coderabbit@claude-plugins-official" },
-    { "name": "frontend-design", "source": "frontend-design@claude-plugins-official" },
-    { "name": "ponytail",        "source": "ponytail@ponytail" }
+    { "name": "superpowers",     "marketplace": "claude-plugins-official" },
+    { "name": "feature-dev",     "marketplace": "claude-plugins-official" },
+    { "name": "code-simplifier", "marketplace": "claude-plugins-official" },
+    { "name": "claude-mem",      "marketplace": "thedotmack" },
+    { "name": "hookify",         "marketplace": "claude-plugins-official" },
+    { "name": "coderabbit",      "marketplace": "claude-plugins-official" },
+    { "name": "frontend-design", "marketplace": "claude-plugins-official" },
+    { "name": "ponytail",        "marketplace": "ponytail" }
   ]
 }
