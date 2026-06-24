@@ -7,7 +7,6 @@ ENDPOINT=$(config_get "wiki" "endpoint")
 
 API_KEY_VAR=$(config_get "wiki" "apiKeyEnvVar")
 ACCOUNT_ID_VAR=$(config_get "wiki" "accountIdEnvVar")
-AGENT_NAME=$(config_get "wiki" "agentName")
 WORLD_NAME=$(config_get "wiki" "worldName")
 
 API_KEY="${!API_KEY_VAR}"
@@ -15,7 +14,6 @@ ACCOUNT_ID="${!ACCOUNT_ID_VAR}"
 
 [ -z "$API_KEY" ] && exit "$ALLOW"
 [ -z "$ACCOUNT_ID" ] && exit "$ALLOW"
-[ -z "$AGENT_NAME" ] && exit "$ALLOW"
 [ -z "$WORLD_NAME" ] && exit "$ALLOW"
 
 # Read Stop event JSON from stdin — Claude Code provides transcript array
@@ -57,7 +55,6 @@ content = sys.stdin.read().strip()
 print(json.dumps({
     'account_id': '$ACCOUNT_ID',
     'world_name': '$WORLD_NAME',
-    'agent_name': '$AGENT_NAME',
     'content': content
 }))
 " <<< "$MESSAGE" 2>/dev/null)
