@@ -29,7 +29,7 @@ print(json.dumps({
 }))
 ")
 
-RESPONSE=$(curl -s -X POST "$ENDPOINT/v1/recall" \
+RESPONSE=$(curl -s --max-time 8 -X POST "$ENDPOINT/v1/recall" \
   -H "apikey: $API_KEY" \
   -H "x-account-id: $ACCOUNT_ID" \
   -H "Content-Type: application/json" \
