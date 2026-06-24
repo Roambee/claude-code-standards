@@ -250,7 +250,7 @@ r = subprocess.run([
 
 try:
     worlds = json.loads(r.stdout)
-    worlds = worlds if isinstance(worlds, list) else worlds.get('worlds', worlds.get('items', []))
+    worlds = worlds if isinstance(worlds, list) else worlds.get('data', worlds.get('worlds', worlds.get('items', [])))
     names = [w.get('world_name', '') for w in worlds if isinstance(w, dict)]
     if 'decklar-wiki' in names:
         print('World decklar-wiki already exists — skipping creation.')

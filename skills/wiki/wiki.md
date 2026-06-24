@@ -60,7 +60,7 @@ curl -s -X POST "$ENDPOINT/v1/recall" \
   -d "$PAYLOAD"
 ```
 
-Parse the response — items may be in a top-level array or under a `results`/`items`/`memories` key. For each result, show:
+Parse the response — items may be in a top-level array or under a `data`/`results`/`items`/`memories` key. For each result, show:
 - The content (truncated to 400 chars if long)
 - Agent name (who contributed it) if available in the response
 - Score/relevance if available

@@ -43,7 +43,7 @@ try:
     if isinstance(data, list):
         items = data
     elif isinstance(data, dict):
-        items = data.get('results', data.get('items', data.get('memories', [])))
+        items = data.get('data', data.get('results', data.get('items', data.get('memories', []))))
     else:
         sys.exit(0)
     if not items:
